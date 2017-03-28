@@ -11,12 +11,21 @@
 #include <QGraphicsView>
 #include <QTextEdit>
 
+#include <QtWidgets>
+
 enum InteractionMode
 {
 	Drawing,
 	Selecting,
 	InsertingText,
 	EditingText
+};
+
+enum Tool
+{
+	Select,
+	Pen,
+	Text
 };
 
 class Paper : public QGraphicsScene
@@ -26,6 +35,7 @@ class Paper : public QGraphicsScene
 public:
 
 	InteractionMode mode;
+	Tool tool;
 
 	Paper(QWidget *parent = 0);
 
@@ -36,7 +46,7 @@ public:
 	int penWidth() const { return myPenWidth; }
 	void setMoving();
 	void setDrawing();
-	void setEditingText();
+	void setInsertingText();
 	void setSelect();
 
 public slots:
@@ -51,6 +61,21 @@ protected:
 private:
 	void drawLineTo(const QPointF &endPoint);
 	void deselect();
+
+	void onSelectMousePressEvent(QGraphicsSceneMouseEvent *event);
+	void onTextMousePressEvent(QGraphicsSceneMouseEvent *event);
+	void onPenMousePressEvent(QGraphicsSceneMouseEvent *event);
+
+	void onSelectMouseMoveEvent(QGraphicsSceneMouseEvent *event);
+	void onTextMouseMoveEvent(QGraphicsSceneMouseEvent *event);
+	void onPenMouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
+	void onSelectMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+	void onTextMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+	void onPenMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+	void handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event);
+
 	void textChanged();
 
 	bool inTheMiddleOfAStroke;

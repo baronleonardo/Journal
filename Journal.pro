@@ -14,7 +14,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    paper.cpp
+    paper.cpp \
+    selecttool.cpp \
+    texttool.cpp \
+    pentool.cpp
 
 HEADERS  += mainwindow.h \
     paper.h

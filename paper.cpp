@@ -29,114 +29,66 @@ void Paper::setPenWidth(int newWidth)
 	myPenWidth = newWidth;
 }
 
-void Paper::setMoving()
-{
-	mode = InteractionMode::Selecting;
-}
-
 void Paper::setDrawing()
 {
 	mode = InteractionMode::Drawing;
+	tool = Tool::Pen;
 }
 
-void Paper::setEditingText()
+void Paper::setInsertingText()
 {
 	mode = InteractionMode::InsertingText;
+	tool = Tool::Text;
 }
 
 void Paper::setSelect()
 {
 	mode = InteractionMode::Selecting;
+	tool = Tool::Select;
+}
+
+void Paper::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
+{
+	QGraphicsItem* item = itemAt(event->scenePos(), QTransform());
+
+	if(!item || (item != selectedItem && item != proxyText))
+	{
+		deselect();
+		mode = InteractionMode::Selecting;
+		tool = Tool::Select;
+	}
+
+	QGraphicsScene::mousePressEvent(event);
 }
 
 void Paper::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{	
-	if(mode != InteractionMode::EditingText)
-		deselect();
-
-	if(event->button() == Qt::LeftButton && mode == InteractionMode::EditingText)
-	{
-		QGraphicsItem* item = itemAt(event->scenePos(), QTransform());
-		if(!item || (item != selectedItem && item != proxyText))
-		{
-			deselect();
-			mode = InteractionMode::Selecting;
-			return;
-		}
-		QGraphicsScene::mousePressEvent(event);
-	}
-
-	else if (event->button() == Qt::LeftButton && mode == InteractionMode::Selecting)
-	{
-		QGraphicsScene::mousePressEvent(event);
-		selectedItem = itemAt(event->scenePos(), QTransform());
-		QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
-
-		if(!selectedTextItem)
-		{
-			deselect();
-			return;
-		}
-
-		textEdit = new QTextEdit();
-		connect(textEdit, &QTextEdit::textChanged,
-				this, &Paper::textChanged);
-		textEdit->resize((int)selectedTextItem->boundingRect().size().width() + 5,
-						 (int)selectedTextItem->boundingRect().size().height() + 5);
-		textEdit->move((int)selectedTextItem->pos().x(), (int)selectedTextItem->pos().y());
-		textEdit->setDocument(selectedTextItem->document());
-		textEdit->setCursorWidth(3);
-		QTextCursor tmpCursor = textEdit->textCursor();
-		tmpCursor.movePosition(QTextCursor::Start);
-		tmpCursor.setVisualNavigation(true);
-		textEdit->setTextCursor(tmpCursor);
-		textEdit->setFocus();
-		proxyText = addWidget(textEdit);
-		proxyText->setFocus();
-		mode = InteractionMode::EditingText;
-	}
-
-	else if(mode == InteractionMode::Selecting)
-		QGraphicsScene::mousePressEvent(event);
-
-	else if (event->button() == Qt::LeftButton && mode == InteractionMode::InsertingText)
-	{
-		textEdit = new QTextEdit();
-		textEdit->move((int)event->scenePos().x() - 10, (int)event->scenePos().y());
-		proxyText = addWidget(textEdit);
-		mode = InteractionMode::Selecting;
-	}
-
-	else if (event->button() == Qt::LeftButton && mode == InteractionMode::Drawing)
-	{
-		currentStrokePath = new QPainterPath(event->scenePos());
-		currentStrokeItem = addPath(*currentStrokePath);
-		currentStrokeItem->setPen(myPen);
-		currentStrokeItem->setFlag(QGraphicsItem::ItemIsMovable);
-		inTheMiddleOfAStroke = true;
-	}
+{
+	if(tool == Tool::Select)
+		onSelectMousePressEvent(event);
+	else if (tool == Tool::Text)
+		onTextMousePressEvent(event);
+	else if (tool == Tool::Pen)
+		onPenMousePressEvent(event);
 }
 
 void Paper::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-	if(mode == InteractionMode::Selecting || mode == InteractionMode::EditingText)
-		QGraphicsScene::mouseMoveEvent(event);
-
-	else if (event->buttons() == Qt::LeftButton && inTheMiddleOfAStroke && mode == InteractionMode::Drawing)
-		drawLineTo(event->scenePos());
+	if(tool == Tool::Select)
+		onSelectMouseMoveEvent(event);
+	else if (tool == Tool::Text)
+		onTextMouseMoveEvent(event);
+	else if (tool == Tool::Pen)
+		onPenMouseMoveEvent(event);
 }
 
 void Paper::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	if(mode == InteractionMode::Selecting  || mode == InteractionMode::EditingText)
-		QGraphicsScene::mouseReleaseEvent(event);
-
-	else if (event->button() == Qt::LeftButton && inTheMiddleOfAStroke && mode == InteractionMode::Drawing)
-	{
-		drawLineTo(event->scenePos());
-		inTheMiddleOfAStroke = false;
-		delete currentStrokePath;
-	}
+	if(tool == Tool::Select)
+		onSelectMouseReleaseEvent(event);
+	else if (tool == Tool::Text)
+		onTextMouseReleaseEvent(event);
+	else if (tool == Tool::Pen)
+		onPenMouseReleaseEvent(event);
 }
 
 void Paper::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
@@ -204,8 +156,14 @@ void Paper::textChanged()
 {
 	QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
 
-	if(!selectedTextItem)
+	if(selectedTextItem)
+	{
+		selectedTextItem->setDocument(textEdit->document());
 		return;
+	}
 
-	selectedTextItem->setDocument(textEdit->document());
+	QGraphicsSimpleTextItem* selectedSimpleTextItem = dynamic_cast<QGraphicsSimpleTextItem*>(selectedItem);
+
+	if(selectedSimpleTextItem)
+		selectedSimpleTextItem->setText(textEdit->document()->toPlainText());
 }

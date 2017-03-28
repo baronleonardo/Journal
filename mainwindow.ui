@@ -38,19 +38,10 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionSelect"/>
-   <addaction name="actionMove"/>
    <addaction name="actionDraw"/>
    <addaction name="actionText"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionMove">
-   <property name="text">
-    <string>Move</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+M</string>
-   </property>
-  </action>
   <action name="actionDraw">
    <property name="text">
     <string>Draw</string>

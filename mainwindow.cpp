@@ -50,14 +50,9 @@ void MainWindow::on_actionDraw_triggered()
 	paper->setDrawing();
 }
 
-void MainWindow::on_actionMove_triggered()
-{
-	paper->setMoving();
-}
-
 void MainWindow::on_actionText_triggered()
 {
-	paper->setEditingText();
+	paper->setInsertingText();
 }
 
 void MainWindow::on_actionSelect_triggered()
