@@ -27,6 +27,8 @@ private slots:
 
 private:
 	Paper *paper;
+	QRectF getScreenSize();
+	void setWindowSize();
 
 public:
 	explicit MainWindow(QWidget *parent = 0);

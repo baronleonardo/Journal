@@ -9,9 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 	//this->setStyleSheet("background-color: #f8f8f8;");
+	setWindowSize();
 	paper = new Paper();
 	ui->graphicsView->setScene(paper);
-	ui->graphicsView->setSceneRect(QRectF(0, 0, 800, 600));
+	ui->graphicsView->setSceneRect(getScreenSize());
 
 	setWindowTitle(tr("Journal"));
 }
@@ -58,4 +59,16 @@ void MainWindow::on_actionText_triggered()
 void MainWindow::on_actionSelect_triggered()
 {
 	paper->setSelect();
+}
+
+QRectF MainWindow::getScreenSize()
+{
+	QScreen *screen = QGuiApplication::primaryScreen();
+	return QRectF(screen->geometry());
+}
+
+void MainWindow::setWindowSize()
+{
+	QRectF screenSize = getScreenSize();
+	resize(screenSize.width(), screenSize.height());
 }
