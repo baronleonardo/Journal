@@ -3,7 +3,7 @@
 
 #include "paper.h"
 
-Paper::Paper(QWidget *parent) : QGraphicsScene(parent)
+Paper::Paper(QWidget *parent) : QGraphicsScene(parent), mCellSize(15, 15)
 {
 	mode = InteractionMode::Selecting; // general mode is drawing
 	inTheMiddleOfAStroke = false;				 // but at this very moment we're not drawing
@@ -18,6 +18,23 @@ Paper::Paper(QWidget *parent) : QGraphicsScene(parent)
 	currentStrokePath = nullptr;
 	currentStrokeItem = nullptr;
 }
+
+// Efficiently draws a grid in the background.
+// For more information: http://www.qtcentre.org/threads/5609-Drawing-grids-efficiently-in-QGraphicsScene?p=28905#post28905
+//void Paper::drawBackground(QPainter *painter, const QRectF &rect)
+//{
+//	qreal left = int(rect.left()) - (int(rect.left()) % mCellSize.width());
+//	qreal top = int(rect.top()) - (int(rect.top()) % mCellSize.height());
+
+//	QVarLengthArray<QLineF, 100> lines;
+
+//	for (qreal x = left; x < rect.right(); x += mCellSize.width())
+//		lines.append(QLineF(x, rect.top(), x, rect.bottom()));
+//	for (qreal y = top; y < rect.bottom(); y += mCellSize.height())
+//		lines.append(QLineF(rect.left(), y, rect.right(), y));
+
+//	painter->drawLines(lines.data(), lines.size());
+//}
 
 void Paper::setPenColor(const QColor &newColor)
 {
@@ -63,6 +80,11 @@ void Paper::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 
 void Paper::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+	mDragged = qgraphicsitem_cast<QGraphicsItem*>(itemAt(event->scenePos(), QTransform()));
+
+	if (mDragged) mDragOffset = event->scenePos() - mDragged->pos();
+	else QGraphicsScene::mousePressEvent(event);
+
 	if(tool == Tool::Select)
 		onSelectMousePressEvent(event);
 	else if (tool == Tool::Text)
@@ -73,6 +95,12 @@ void Paper::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Paper::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+	if (mDragged)
+		// Ensure that the item's offset from the mouse cursor stays the same.
+		mDragged->setPos(event->scenePos() - mDragOffset);
+	else
+		QGraphicsScene::mouseMoveEvent(event);
+
 	if(tool == Tool::Select)
 		onSelectMouseMoveEvent(event);
 	else if (tool == Tool::Text)
@@ -83,6 +111,16 @@ void Paper::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void Paper::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	if (mDragged)
+	{
+		int x = floor(mDragged->scenePos().x() / mCellSize.width()) * mCellSize.width();
+		int y = floor(mDragged->scenePos().y() / mCellSize.height()) * mCellSize.height();
+		mDragged->setPos(x, y);
+		mDragged = 0;
+	}
+	else
+		QGraphicsScene::mouseReleaseEvent(event);
+
 	if(tool == Tool::Select)
 		onSelectMouseReleaseEvent(event);
 	else if (tool == Tool::Text)
@@ -123,8 +161,11 @@ void Paper::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 	else return;
 
-	item->setPos(event->scenePos());
 	item->setFlag(QGraphicsItem::ItemIsMovable);
+	// snaps to nearest grid line
+	int x = floor(event->scenePos().x() / mCellSize.width()) * mCellSize.width();
+	int y = floor(event->scenePos().y() / mCellSize.height()) * mCellSize.height();
+	item->setPos(x, y);
 	addItem(item);
 }
 

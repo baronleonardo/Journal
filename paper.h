@@ -12,6 +12,7 @@
 #include <QTextEdit>
 
 #include <QtWidgets>
+#include <math.h>
 
 enum InteractionMode
 {
@@ -57,6 +58,7 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void dragMoveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+	//void drawBackground(QPainter *painter, const QRectF &rect) Q_DECL_OVERRIDE;
 
 private:
 	void drawLineTo(const QPointF &endPoint);
@@ -88,6 +90,13 @@ private:
 	QPen myPen;
 	QPainterPath* currentStrokePath;
 	QGraphicsPathItem* currentStrokeItem;
+
+	// The size of the cells in the grid.
+	const QSize mCellSize;
+	// The item being dragged.
+	QGraphicsItem *mDragged;
+	// The distance from the top left of the item to the mouse position.
+	QPointF mDragOffset;
 };
 
 #endif
