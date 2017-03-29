@@ -21,20 +21,20 @@ Paper::Paper(QWidget *parent) : QGraphicsScene(parent), mCellSize(15, 15)
 
 // Efficiently draws a grid in the background.
 // For more information: http://www.qtcentre.org/threads/5609-Drawing-grids-efficiently-in-QGraphicsScene?p=28905#post28905
-//void Paper::drawBackground(QPainter *painter, const QRectF &rect)
-//{
-//	qreal left = int(rect.left()) - (int(rect.left()) % mCellSize.width());
-//	qreal top = int(rect.top()) - (int(rect.top()) % mCellSize.height());
+void Paper::drawBackground(QPainter *painter, const QRectF &rect)
+{
+	qreal left = int(rect.left()) - (int(rect.left()) % mCellSize.width());
+	qreal top = int(rect.top()) - (int(rect.top()) % mCellSize.height());
 
-//	QVarLengthArray<QLineF, 100> lines;
+	QVarLengthArray<QLineF, 100> lines;
 
-//	for (qreal x = left; x < rect.right(); x += mCellSize.width())
-//		lines.append(QLineF(x, rect.top(), x, rect.bottom()));
-//	for (qreal y = top; y < rect.bottom(); y += mCellSize.height())
-//		lines.append(QLineF(rect.left(), y, rect.right(), y));
+	for (qreal x = left; x < rect.right(); x += mCellSize.width())
+		lines.append(QLineF(x, rect.top(), x, rect.bottom()));
+	for (qreal y = top; y < rect.bottom(); y += mCellSize.height())
+		lines.append(QLineF(rect.left(), y, rect.right(), y));
 
-//	painter->drawLines(lines.data(), lines.size());
-//}
+	painter->drawLines(lines.data(), lines.size());
+}
 
 void Paper::setPenColor(const QColor &newColor)
 {
@@ -78,6 +78,12 @@ void Paper::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 	QGraphicsScene::mousePressEvent(event);
 }
 
+bool Paper::isNotAStroke(QGraphicsItem* item)
+{
+	QGraphicsPathItem* tmp = qgraphicsitem_cast<QGraphicsPathItem*>(item);
+	return (tmp == nullptr) ? true : false;
+}
+
 void Paper::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	mDragged = qgraphicsitem_cast<QGraphicsItem*>(itemAt(event->scenePos(), QTransform()));
@@ -111,7 +117,7 @@ void Paper::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void Paper::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	if (mDragged)
+	if (mDragged && isNotAStroke(mDragged))
 	{
 		int x = floor(mDragged->scenePos().x() / mCellSize.width()) * mCellSize.width();
 		int y = floor(mDragged->scenePos().y() / mCellSize.height()) * mCellSize.height();
