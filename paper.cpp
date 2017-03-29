@@ -78,10 +78,10 @@ void Paper::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 	QGraphicsScene::mousePressEvent(event);
 }
 
-bool Paper::isNotAStroke(QGraphicsItem* item)
+bool Paper::isAStroke(QGraphicsItem* item)
 {
 	QGraphicsPathItem* tmp = qgraphicsitem_cast<QGraphicsPathItem*>(item);
-	return (tmp == nullptr) ? true : false;
+	return (tmp == nullptr) ? false : true;
 }
 
 void Paper::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -117,10 +117,10 @@ void Paper::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void Paper::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	if (mDragged && isNotAStroke(mDragged))
+	if (mDragged && ! isAStroke(mDragged))
 	{
-		int x = floor(mDragged->scenePos().x() / mCellSize.width()) * mCellSize.width();
-		int y = floor(mDragged->scenePos().y() / mCellSize.height()) * mCellSize.height();
+		int x, y;
+		roundToNearestCell(x, y, mDragged->scenePos());
 		mDragged->setPos(x, y);
 		mDragged = 0;
 	}
@@ -169,10 +169,16 @@ void Paper::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 	item->setFlag(QGraphicsItem::ItemIsMovable);
 	// snaps to nearest grid line
-	int x = floor(event->scenePos().x() / mCellSize.width()) * mCellSize.width();
-	int y = floor(event->scenePos().y() / mCellSize.height()) * mCellSize.height();
+	int x, y;
+	roundToNearestCell(x, y, event->scenePos());
 	item->setPos(x, y);
 	addItem(item);
+}
+
+void Paper::roundToNearestCell(int &x, int &y, QPointF pos)
+{
+	x = round(pos.x() / mCellSize.width()) * mCellSize.width();
+	y = round(pos.y() / mCellSize.height()) * mCellSize.height();
 }
 
 void Paper::drawLineTo(const QPointF &endPoint)

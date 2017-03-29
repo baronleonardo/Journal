@@ -78,7 +78,8 @@ private:
 
 	void handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event);
 
-	bool isNotAStroke(QGraphicsItem* item);
+	bool isAStroke(QGraphicsItem* item);
+	void roundToNearestCell(int &x, int &y, QPointF pos);
 
 	void textChanged();
 
