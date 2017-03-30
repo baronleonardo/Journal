@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,9 +17,11 @@ SOURCES += main.cpp\
     paper.cpp \
     selecttool.cpp \
     texttool.cpp \
-    pentool.cpp
+    pentool.cpp \
+    papermodel.cpp
 
 HEADERS  += mainwindow.h \
-    paper.h
+    paper.h \
+    papermodel.h
 
 FORMS    += mainwindow.ui

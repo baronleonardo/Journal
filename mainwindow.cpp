@@ -1,16 +1,17 @@
 #include <QtWidgets>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "paper.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+						QMainWindow(parent),
+						ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 	//this->setStyleSheet("background-color: #f8f8f8;");
 	setWindowSize();
-	paper = new Paper();
+	paper = paperModel.loadPaper("{21519492-e41f-404b-b918-2b184b643831}");
+//	paper = new Paper();
+//	paper->setPaperID();
 	ui->graphicsView->setScene(paper);
 	ui->graphicsView->setSceneRect(getScreenSize());
 
@@ -71,4 +72,9 @@ void MainWindow::setWindowSize()
 {
 	QRectF screenSize = getScreenSize();
 	resize(screenSize.width(), screenSize.height());
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+	paperModel.savePaper(paper);
 }

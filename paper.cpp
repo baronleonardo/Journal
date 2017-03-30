@@ -32,7 +32,9 @@ void Paper::drawBackground(QPainter *painter, const QRectF &rect)
 		lines.append(QLineF(x, rect.top(), x, rect.bottom()));
 	for (qreal y = top; y < rect.bottom(); y += mCellSize.height())
 		lines.append(QLineF(rect.left(), y, rect.right(), y));
-
+	myPen.setColor(QColor(190,190,190,50));
+	painter->setPen(myPen);
+	myPen.setColor(myPenColor);
 	painter->drawLines(lines.data(), lines.size());
 }
 
@@ -62,6 +64,22 @@ void Paper::setSelect()
 {
 	mode = InteractionMode::Selecting;
 	tool = Tool::Select;
+}
+
+void Paper::setPaperID(QUuid id)
+{
+	this->id = id;
+}
+
+void Paper::setPaperID()
+{
+	id = QUuid::createUuid();
+}
+
+void Paper::addSavableItem(QGraphicsItem *item, QUuid id)
+{
+	addItem(item);
+	savableItems.insert(item, id);
 }
 
 void Paper::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
@@ -173,12 +191,18 @@ void Paper::dropEvent(QGraphicsSceneDragDropEvent *event)
 	roundToNearestCell(x, y, event->scenePos());
 	item->setPos(x, y);
 	addItem(item);
+	addSavableItem(item);
 }
 
 void Paper::roundToNearestCell(int &x, int &y, QPointF pos)
 {
 	x = round(pos.x() / mCellSize.width()) * mCellSize.width();
 	y = round(pos.y() / mCellSize.height()) * mCellSize.height();
+}
+
+void Paper::addSavableItem(QGraphicsItem *item)
+{
+	savableItems.insert(item, QUuid::createUuid());
 }
 
 void Paper::drawLineTo(const QPointF &endPoint)

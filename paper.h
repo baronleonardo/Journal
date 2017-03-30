@@ -34,9 +34,10 @@ class Paper : public QGraphicsScene
 	Q_OBJECT
 
 public:
-
+	QUuid id;
 	InteractionMode mode;
 	Tool tool;
+	QHash<QGraphicsItem*, QUuid> savableItems;
 
 	Paper(QWidget *parent = 0);
 
@@ -49,6 +50,12 @@ public:
 	void setDrawing();
 	void setInsertingText();
 	void setSelect();
+	void setPaperID(QUuid id);
+	void setPaperID();
+	void addSavableItem(QGraphicsItem* item, QUuid id);
+
+signals:
+	void paperModified(Paper* paper, QUuid itemID);
 
 public slots:
 
@@ -80,6 +87,7 @@ private:
 
 	bool isAStroke(QGraphicsItem* item);
 	void roundToNearestCell(int &x, int &y, QPointF pos);
+	void addSavableItem(QGraphicsItem* item);
 
 	void textChanged();
 
@@ -93,12 +101,8 @@ private:
 	QPen myPen;
 	QPainterPath* currentStrokePath;
 	QGraphicsPathItem* currentStrokeItem;
-
-	// The size of the cells in the grid.
 	const QSize mCellSize;
-	// The item being dragged.
 	QGraphicsItem *mDragged;
-	// The distance from the top left of the item to the mouse position.
 	QPointF mDragOffset;
 };
 

@@ -9,6 +9,7 @@ void Paper::onPenMousePressEvent(QGraphicsSceneMouseEvent *event)
 		currentStrokeItem->setPen(myPen);
 		currentStrokeItem->setFlag(QGraphicsItem::ItemIsMovable);
 		inTheMiddleOfAStroke = true;
+		addSavableItem(currentStrokeItem);
 	}
 }
 
