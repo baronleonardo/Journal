@@ -1,6 +1,6 @@
 #include "papermodel.h"
 
-QJsonObject PaperModel::itemToVariant(QGraphicsItem* item, QUuid id)
+QJsonObject PaperModel::itemToJson(QGraphicsItem* item, QUuid id)
 {
 	QJsonObject data;
 
@@ -11,7 +11,7 @@ QJsonObject PaperModel::itemToVariant(QGraphicsItem* item, QUuid id)
 	if (QGraphicsPixmapItem* pixmapItem = dynamic_cast<QGraphicsPixmapItem*>(item))
 	{
 		data["type"] = "pixmap";
-		data["pixmap"] = jsonValFromPixmap(pixmapItem->pixmap()); //QJsonValue::fromVariant(pixmapItem->pixmap());
+		data["pixmap"] = jsonValFromPixmap(pixmapItem->pixmap());
 	}
 	else if (QGraphicsTextItem* textItem = dynamic_cast<QGraphicsTextItem*>(item))
 	{
@@ -26,7 +26,7 @@ QJsonObject PaperModel::itemToVariant(QGraphicsItem* item, QUuid id)
 	else if (QGraphicsPathItem* pathItem = dynamic_cast<QGraphicsPathItem*>(item))
 	{
 		data["type"] = "stroke";
-		data["path"] = QVariant(getPointsInPath(pathItem->path())).toJsonArray();
+		data["path"] = jsonArrayFromPath(pathItem->path());
 	}
 	else return QJsonObject();
 
@@ -77,26 +77,47 @@ bool PaperModel::dataIs(QVariantHash data, QString type)
 	return data["type"].toString() == type;
 }
 
-QList<QVariant> PaperModel::getPointsInPath(QPainterPath path)
+QList<QPointF> PaperModel::getPointsInPath(QPainterPath path)
 {
-	QList<QVariant> points;
+	QList<QPointF> points;
 	for(int i = 0; i < path.elementCount(); i++)
-		points.append(QVariant(QPointF(path.elementAt(i).x, path.elementAt(i).y)));
+		points.append(QPointF(path.elementAt(i).x, path.elementAt(i).y));
 	return points;
+}
+
+QJsonArray PaperModel::jsonArrayFromPath(QPainterPath path)
+{
+	QList<QPointF> points = getPointsInPath(path);
+	QVariantList pointPositions;
+
+
+	foreach(QPointF point, points)
+	{
+		pointPositions.append(QVariant(point.x()));
+		pointPositions.append(QVariant(point.y()));
+	}
+
+	QJsonArray tmp = QJsonArray::fromVariantList(pointPositions);
+	return tmp;
 }
 
 QPainterPath PaperModel::getPathFromJson(QJsonValue json)
 {
 	QList<QVariant> points = json.toArray().toVariantList();
-	return getPathFromPoints(points, points.first().toPointF());
+	return getPathFromPoints(points);
 }
 
-QPainterPath PaperModel::getPathFromPoints(QList<QVariant> points, QPointF position)
+QPainterPath PaperModel::getPathFromPoints(QList<QVariant> points)
 {
+	QPointF position(points[0].toDouble(), points[1].toDouble());
 	QPainterPath path(position);
 
-	foreach(QVariant point, points)
-		path.lineTo(point.toPointF());
+	// it's a list of [x, y, x, y, x, y...]
+	for (int i = 2; i < points.size() - 1; i+=2)
+	{
+		QPointF point(points[i].toDouble(), points[i+1].toDouble());
+		path.lineTo(point);
+	}
 
 	return path;
 }
@@ -137,7 +158,7 @@ void PaperModel::savePaper(Paper *paper)
 	while (i.hasNext())
 	{
 		i.next();
-		data_list << itemToVariant(i.key(), i.value());
+		data_list << itemToJson(i.key(), i.value());
 	}
 
 	QFile paperFile(appDirectoryLocation + paper->id.toString());

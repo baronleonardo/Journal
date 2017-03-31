@@ -9,12 +9,13 @@ private:
 	const QString appDirectoryName;
 	QString appDirectoryLocation;
 
-	QJsonObject itemToVariant(QGraphicsItem* item, QUuid id);
+	QJsonObject itemToJson(QGraphicsItem* item, QUuid id);
 	QGraphicsItem* itemFromJson(QJsonObject data);
 	QPainterPath getPathFromJson(QJsonValue json);
-	QPainterPath getPathFromPoints(QList<QVariant> points, QPointF position);
+	QPainterPath getPathFromPoints(QList<QVariant> points);
 	bool dataIs(QVariantHash data, QString type);
-	QList<QVariant> getPointsInPath(QPainterPath path);
+	QList<QPointF> getPointsInPath(QPainterPath path);
+	QJsonArray jsonArrayFromPath(QPainterPath path);
 	QPixmap pixmapFrom(const QJsonValue & val);
 	QJsonValue jsonValFromPixmap(const QPixmap & p);
 
