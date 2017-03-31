@@ -8,7 +8,7 @@ This project is based on the wonderful Qt framework.
 If you're on Windows download and install it here: https://www.qt.io/download-open-source/
 If you're on Linux use your package manager.
 ### Ubuntu
-`sudo apt install sudo apt-get install qt5-default qttools5-dev-tools`
+`sudo apt install sudo apt-get install qt5-default qttools5-dev-tools` (I don't have ubuntu, let me know if there are more packages the needs to be installed please).
 ### Fedora
 `sudo dnf install qt5-qt*`
 ### Arch
