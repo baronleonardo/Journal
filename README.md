@@ -2,7 +2,7 @@
 # Journal
 a note taking application that is heavily inspired by OneNote.
 
-## Setting up development environment
+## Dependencies
 This project is based on the wonderful Qt framework.
 
 If you're on Windows download and install it here: https://www.qt.io/download-open-source/
@@ -14,12 +14,18 @@ If you're on Linux use your package manager.
 ### Arch
 I don't know! If you have arch send a pull request to let the world know what commands to do!
 
-## opening the project using the Terminal
-after making sure that Qt has been downloaded go to the project directory `cd Journal` and type the following commands :
-*  `qmake`
-*  `make`
-*  `./Jounral`
-## opening the proeject using [Qt creator](https://www.qt.io/ide/)
-I use qtcreator to develop and I recommend using it.
+## Setting up the development environment
+I use [Qt Creator](https://www.qt.io/ide/) to develop and I recommend using it.
 
 The project uses qmake, so import the project to qtcreator and it should be fine as long as you have a recent version of qt.
+
+## Use the terminal to build and run
+Do the following if you only want to try Journal. If you want to contribute code I strongly recommend Setting up the development environment.
+
+Make sure you have the dependencies installed and then:
+* go to the project directory `cd Journal`
+* `mkdir build`
+* `cd build`
+*  if on Ubuntu: `qmake ..` if on Fedora `qmake-qt5 ..`
+*  `make`
+*  `./Jounral`
