@@ -14,4 +14,12 @@ If you're on Linux use your package manager.
 ### Arch
 I don't know! If you have arch send a pull request to let the world know what commands to do!
 
-I use qtcreator to develop and I recommend using it. The project uses qmake, so import the project to qtcreator and it should be fine as long as you have a recent version of qt.
+## opening the project using the Terminal
+after making sure that Qt has been downloaded go to the project directory `cd Journal` and type the following commands :
+*  `qmake`
+*  `make`
+*  `./Jounral`
+## opening the proeject using [Qt creator](https://www.qt.io/ide/)
+I use qtcreator to develop and I recommend using it.
+
+The project uses qmake, so import the project to qtcreator and it should be fine as long as you have a recent version of qt.
