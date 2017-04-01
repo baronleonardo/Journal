@@ -14,21 +14,24 @@ private:
 	QString appDirectoryLocation;
 	QJsonObject* paperJson;
 	Paper* paper;
-	QFile paperFile;
+	QFile* paperFile;
 
 	QJsonValue itemToJson(QGraphicsItem* item);
-	QGraphicsItem* itemFromJson(QJsonObject data);
+	QGraphicsItem* itemFromJson(QJsonObject data, QString mediaFileLocation);
 	QPainterPath getPathFromJson(QJsonValue json);
 	QPainterPath getPathFromPoints(QList<QVariant> points);
-	bool dataIs(QVariantHash data, QString type);
 	QList<QPointF> getPointsInPath(QPainterPath path);
 	QJsonArray jsonArrayFromPath(QPainterPath path);
-	QPixmap pixmapFrom(const QJsonValue & val);
-	QJsonValue jsonValFromPixmap(const QPixmap & p);
 	void saveToFile(QJsonDocument jsonDocument);
+	QString copyMediaFileToJournal(QUuid id, QString path);
+	QString getAbsolutePath(QString relativePath);
+	QGraphicsPixmapItem* pixmap_cast(QGraphicsItem* item);
+	QGraphicsPathItem* pathItem_cast(QGraphicsItem* item);
+	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem* item);
+	QGraphicsTextItem* text_cast(QGraphicsItem* item);
 
 public slots:
-	void onItemModified(QUuid id, QGraphicsItem* item);
+	void onItemModified(QUuid id, QGraphicsItem* item, QString itemPath);
 
 protected:
 	void run() override;
@@ -36,11 +39,12 @@ protected:
 signals:
 
 public:
-	PaperModel(QObject* parent = 0);
+	PaperModel(QString path);
 	~PaperModel();
 
 	Paper* loadPaper(QString path);
 	void savePaper(Paper* paper);
+	Paper *getPaper() const;
 };
 
 #endif // PAPERMODEL_H

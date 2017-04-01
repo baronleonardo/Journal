@@ -1,5 +1,10 @@
 #include "papermodel.h"
 
+Paper *PaperModel::getPaper() const
+{
+	return paper;
+}
+
 QJsonValue PaperModel::itemToJson(QGraphicsItem* item)
 {
 	QJsonObject data;
@@ -7,22 +12,20 @@ QJsonValue PaperModel::itemToJson(QGraphicsItem* item)
 	data["posx"] = item->pos().x();
 	data["posy"] = item->pos().y();
 
-	if (QGraphicsPixmapItem* pixmapItem = dynamic_cast<QGraphicsPixmapItem*>(item))
-	{
+	if (pixmap_cast(item))
 		data["type"] = "pixmap";
-		data["pixmap"] = jsonValFromPixmap(pixmapItem->pixmap());
-	}
-	else if (QGraphicsTextItem* textItem = dynamic_cast<QGraphicsTextItem*>(item))
+
+	else if (QGraphicsTextItem* textItem = text_cast(item))
 	{
 		data["type"] = "richtext";
 		data["document"] = textItem->document()->toHtml();
 	}
-	else if (QGraphicsSimpleTextItem* simpleTextItem = dynamic_cast<QGraphicsSimpleTextItem*>(item))
+	else if (QGraphicsSimpleTextItem* simpleTextItem = simpleText_cast(item))
 	{
 		data["type"] = "simpletext";
 		data["text"] = simpleTextItem->text();
 	}
-	else if (QGraphicsPathItem* pathItem = dynamic_cast<QGraphicsPathItem*>(item))
+	else if (QGraphicsPathItem* pathItem = pathItem_cast(item))
 	{
 		data["type"] = "stroke";
 		data["path"] = jsonArrayFromPath(pathItem->path());
@@ -32,12 +35,12 @@ QJsonValue PaperModel::itemToJson(QGraphicsItem* item)
 	return QJsonValue(data);
 }
 
-QGraphicsItem* PaperModel::itemFromJson(QJsonObject data)
+QGraphicsItem* PaperModel::itemFromJson(QJsonObject data, QString mediaFileLocation = "")
 {
 	QGraphicsItem* result;
 
 	if (data["type"] == "pixmap")
-		result = new QGraphicsPixmapItem(pixmapFrom(data["pixmap"]));
+		result = new QGraphicsPixmapItem(QPixmap(mediaFileLocation));
 	else if(data["type"] == "stroke")
 		result = new QGraphicsPathItem(getPathFromJson(data["path"]));
 	else if(data["type"] == "simpletext")
@@ -53,19 +56,13 @@ QGraphicsItem* PaperModel::itemFromJson(QJsonObject data)
 	return result;
 }
 
-QJsonValue PaperModel::jsonValFromPixmap(const QPixmap & p)
-{
-	QByteArray data;
-	QBuffer buffer { &data };
-	buffer.open(QIODevice::WriteOnly);
-	p.save(&buffer, "PNG");
-	auto encoded = buffer.data().toBase64();
-	return QJsonValue(QString::fromLatin1(encoded));
-}
-
-void PaperModel::onItemModified(QUuid id, QGraphicsItem *item)
+void PaperModel::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath = "")
 {
 	QJsonObject::Iterator i = paperJson->find(id.toString());
+
+	if (itemPath.size())
+		itemPath = copyMediaFileToJournal(id, itemPath);
+
 	QJsonValue itemJson = itemToJson(item);
 
 	if(i == paperJson->end())
@@ -75,6 +72,47 @@ void PaperModel::onItemModified(QUuid id, QGraphicsItem *item)
 	saveToFile(QJsonDocument(*paperJson));
 }
 
+QString PaperModel::copyMediaFileToJournal(QUuid id, QString path)
+{
+	QFile mediaFile(path);
+	if (!mediaFile.exists())
+		return "";
+	QString mediaFilePath = appDirectoryLocation + id.toString();
+
+	mediaFile.copy(mediaFilePath);
+
+	return mediaFilePath;
+}
+
+// gets absolute path to assets within the journal directory, returns an empty string if it does not exist.
+QString PaperModel::getAbsolutePath(QString relativePath)
+{
+	QFile file(appDirectoryLocation + relativePath);
+	if (file.exists())
+		return appDirectoryLocation + relativePath;
+	return "";
+}
+
+QGraphicsPixmapItem* PaperModel::pixmap_cast(QGraphicsItem *item)
+{
+	return dynamic_cast<QGraphicsPixmapItem*>(item);
+}
+
+QGraphicsPathItem* PaperModel::pathItem_cast(QGraphicsItem *item)
+{
+	return dynamic_cast<QGraphicsPathItem*>(item);
+}
+
+QGraphicsSimpleTextItem* PaperModel::simpleText_cast(QGraphicsItem *item)
+{
+	return dynamic_cast<QGraphicsSimpleTextItem*>(item);
+}
+
+QGraphicsTextItem* PaperModel::text_cast(QGraphicsItem *item)
+{
+	return dynamic_cast<QGraphicsTextItem*>(item);
+}
+
 void PaperModel::run()
 {
 
@@ -82,22 +120,9 @@ void PaperModel::run()
 
 void PaperModel::saveToFile(QJsonDocument jsonDocument)
 {
-	paperFile.open(QIODevice::WriteOnly);
-	paperFile.write(jsonDocument.toJson());
-	paperFile.close();
-}
-
-QPixmap PaperModel::pixmapFrom(const QJsonValue & val)
-{
-	QByteArray encoded = val.toString().toLatin1();
-	QPixmap p;
-	p.loadFromData(QByteArray::fromBase64(encoded), "PNG");
-	return p;
-}
-
-bool PaperModel::dataIs(QVariantHash data, QString type)
-{
-	return data["type"].toString() == type;
+	paperFile->open(QIODevice::WriteOnly);
+	paperFile->write(jsonDocument.toJson());
+	paperFile->close();
 }
 
 QList<QPointF> PaperModel::getPointsInPath(QPainterPath path)
@@ -145,7 +170,7 @@ QPainterPath PaperModel::getPathFromPoints(QList<QVariant> points)
 	return path;
 }
 
-PaperModel::PaperModel(QObject* parent) : QThread(parent), appDirectoryName("/journal/")
+PaperModel::PaperModel(QString path) : QThread(), appDirectoryName("/journal/")
 {
 	QString configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
 	appDirectoryLocation = configLocation + appDirectoryName;
@@ -154,25 +179,26 @@ PaperModel::PaperModel(QObject* parent) : QThread(parent), appDirectoryName("/jo
 	if(!dir.exists(appDirectoryLocation))
 		dir.mkdir(appDirectoryLocation);
 
-	paperFile.setFileName(appDirectoryLocation + paper->id.toString());
+	paperFile = new QFile(appDirectoryLocation + path);
+	paper = loadPaper(path);
 }
 
 PaperModel::~PaperModel()
 {
-	paperFile.close();
+	paperFile->close();
 }
 
 Paper *PaperModel::loadPaper(QString path)
 {
-	paper = new Paper();
+	Paper* newPaper = new Paper();
 
-	paper->setPaperID(path);
+	newPaper->setPaperID(path);
 
-	paperFile.open(QIODevice::ReadOnly);
+	paperFile->open(QIODevice::ReadOnly);
 
-	QByteArray byteArray = paperFile.readAll();
+	QByteArray byteArray = paperFile->readAll();
 
-	paperFile.close();
+	paperFile->close();
 
 	QJsonDocument jsonDocument(QJsonDocument::fromJson(byteArray));
 	paperJson = new QJsonObject(jsonDocument.object());
@@ -180,9 +206,13 @@ Paper *PaperModel::loadPaper(QString path)
 	QJsonObject::Iterator i;
 
 	for(i = paperJson->begin(); i != paperJson->end(); i++)
-		paper->addSavableItem(itemFromJson(i.value().toObject()), QUuid(i.key()));
+	{
+		QString itemPath = getAbsolutePath(i.key());
+		QGraphicsItem* item = itemFromJson(i.value().toObject(), itemPath);
+		newPaper->addSavableItem(item, QUuid(i.key()));
+	}
 
-	return paper;
+	return newPaper;
 }
 
 void PaperModel::savePaper(Paper *paper)

@@ -26,7 +26,7 @@ private slots:
 	void on_actionSelect_triggered();
 
 private:
-	PaperModel paperModel;
+	PaperModel *paperModel;
 	Paper *paper;
 	QRectF getScreenSize();
 	void setWindowSize();

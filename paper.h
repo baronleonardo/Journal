@@ -55,7 +55,7 @@ public:
 	void addSavableItem(QGraphicsItem* item, QUuid id);
 
 signals:
-	void itemModified(QUuid itemID, QGraphicsItem* item);
+	void itemModified(QUuid itemID, QGraphicsItem* item, QString itemPath = "");
 
 public slots:
 
@@ -70,6 +70,10 @@ protected:
 private:
 	void drawLineTo(const QPointF &endPoint);
 	void deselect();
+
+	void onMediaFileDropEvent(QGraphicsSceneDragDropEvent *event);
+	void onSimpleTextDropEvent(QGraphicsSceneDragDropEvent *event);
+	void onTextDropEvent(QGraphicsSceneDragDropEvent *event);
 
 	void onSelectMousePressEvent(QGraphicsSceneMouseEvent *event);
 	void onTextMousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -87,7 +91,8 @@ private:
 
 	bool isAStroke(QGraphicsItem* item);
 	void roundToNearestCell(int &x, int &y, QPointF pos);
-	void addSavableItem(QGraphicsItem* item);
+	void insertIntoSavableItems(QGraphicsItem* item);
+	void initializeAndAddItemToScene(QGraphicsItem* item, QPointF position);
 
 	void textChanged();
 

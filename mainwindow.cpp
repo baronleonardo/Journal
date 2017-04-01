@@ -4,14 +4,14 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 						QMainWindow(parent),
-						ui(new Ui::MainWindow),
-						paperModel(parent)
+						ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 	//this->setStyleSheet("background-color: #f8f8f8;");
 	setWindowSize();
-	paper = paperModel.loadPaper("{21519492-e41f-404b-b918-2b184b643831}");
-	connect(paper, &Paper::itemModified, &paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
+	paperModel = new PaperModel("default_paper");
+	paper = paperModel->getPaper();
+	connect(paper, &Paper::itemModified, paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
 //	paper = new Paper();
 //	paper->setPaperID();
 	ui->graphicsView->setScene(paper);
@@ -24,6 +24,7 @@ MainWindow::~MainWindow()
 {
 	delete ui;
 	delete paper;
+	delete paperModel;
 }
 
 void MainWindow::penColor()

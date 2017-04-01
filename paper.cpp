@@ -167,36 +167,16 @@ void Paper::dropEvent(QGraphicsSceneDragDropEvent *event)
 	if(mode == InteractionMode::Selecting)
 		QGraphicsScene::dropEvent(event);
 
-	QGraphicsItem* item;
-
 	if(event->mimeData()->hasUrls()) //TODO: make sure it's a photo and add support to all file types ever
-		item = new QGraphicsPixmapItem(* new QPixmap(event->mimeData()->urls()[0].toLocalFile()));
+		onMediaFileDropEvent(event);
 
 	else if (event->mimeData()->hasHtml())
-	{
-		item = new QGraphicsTextItem();
-		((QGraphicsTextItem *)item)->setHtml(event->mimeData()->html());
-	}
+		onTextDropEvent(event);
 
 	else if(event->mimeData()->hasText())
-			item = new QGraphicsSimpleTextItem(event->mimeData()->text());
-
-	else if(event->mimeData()->hasImage())
-	{
-		QImage image = qvariant_cast<QImage>(event->mimeData()->imageData());
-		item = new QGraphicsPixmapItem(QPixmap::fromImage(image));
-	}
+		onSimpleTextDropEvent(event);
 
 	else return;
-
-	item->setFlag(QGraphicsItem::ItemIsMovable);
-	// snaps to nearest grid line
-	int x, y;
-	roundToNearestCell(x, y, event->scenePos());
-	item->setPos(x, y);
-	addItem(item);
-	addSavableItem(item);
-	emit itemModified(savableItems.find(item).value(), item);
 }
 
 void Paper::roundToNearestCell(int &x, int &y, QPointF pos)
@@ -205,9 +185,22 @@ void Paper::roundToNearestCell(int &x, int &y, QPointF pos)
 	y = round(pos.y() / mCellSize.height()) * mCellSize.height();
 }
 
-void Paper::addSavableItem(QGraphicsItem *item)
+void Paper::insertIntoSavableItems(QGraphicsItem *item)
 {
 	savableItems.insert(item, QUuid::createUuid());
+}
+
+void Paper::initializeAndAddItemToScene(QGraphicsItem *item, QPointF position)
+{
+	item->setFlag(QGraphicsItem::ItemIsMovable);
+
+	// snaps to nearest grid line
+	int x, y;
+	roundToNearestCell(x, y, position);
+	item->setPos(x, y);
+
+	addItem(item);
+	insertIntoSavableItems(item);
 }
 
 void Paper::drawLineTo(const QPointF &endPoint)
@@ -232,6 +225,29 @@ void Paper::deselect()
 
 	if (selectedItem)
 		selectedItem = nullptr;
+}
+
+void Paper::onMediaFileDropEvent(QGraphicsSceneDragDropEvent *event)
+{
+	QString itemPath = event->mimeData()->urls()[0].toLocalFile();
+	QGraphicsPixmapItem* item = new QGraphicsPixmapItem(* new QPixmap(itemPath));
+	initializeAndAddItemToScene(item, event->scenePos());
+	emit itemModified(savableItems.find(item).value(), item, itemPath);
+}
+
+void Paper::onSimpleTextDropEvent(QGraphicsSceneDragDropEvent *event)
+{
+	QGraphicsSimpleTextItem* item = new QGraphicsSimpleTextItem(event->mimeData()->text());
+	initializeAndAddItemToScene(item, event->scenePos());
+	emit itemModified(savableItems.find(item).value(), item);
+}
+
+void Paper::onTextDropEvent(QGraphicsSceneDragDropEvent *event)
+{
+	QGraphicsTextItem* item = new QGraphicsTextItem();
+	item->setHtml(event->mimeData()->html());
+	initializeAndAddItemToScene(item, event->scenePos());
+	emit itemModified(savableItems.find(item).value(), item);
 }
 
 void Paper::textChanged()

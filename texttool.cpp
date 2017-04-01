@@ -9,7 +9,7 @@ void Paper::onTextMousePressEvent(QGraphicsSceneMouseEvent *event)
 	{
 		//selectedItem = addText("");
 		selectedItem = addSimpleText("");
-		addSavableItem(selectedItem);
+		insertIntoSavableItems(selectedItem);
 		selectedItem->setPos(event->scenePos());
 		selectedItem->setFlag(QGraphicsItem::ItemIsMovable);
 		textEdit = new QTextEdit();
