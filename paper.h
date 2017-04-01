@@ -55,7 +55,7 @@ public:
 	void addSavableItem(QGraphicsItem* item, QUuid id);
 
 signals:
-	void paperModified(Paper* paper, QUuid itemID);
+	void itemModified(QUuid itemID, QGraphicsItem* item);
 
 public slots:
 

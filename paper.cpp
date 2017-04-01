@@ -88,6 +88,7 @@ void Paper::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 
 	if(!item || (item != selectedItem && item != proxyText))
 	{
+		emit itemModified(savableItems.find(selectedItem).value(), selectedItem);
 		deselect();
 		mode = InteractionMode::Selecting;
 		tool = Tool::Select;
@@ -135,6 +136,9 @@ void Paper::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void Paper::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	if(mDragged)
+		emit itemModified(savableItems.find(mDragged).value(), mDragged);
+
 	if (mDragged && ! isAStroke(mDragged))
 	{
 		int x, y;
@@ -192,6 +196,7 @@ void Paper::dropEvent(QGraphicsSceneDragDropEvent *event)
 	item->setPos(x, y);
 	addItem(item);
 	addSavableItem(item);
+	emit itemModified(savableItems.find(item).value(), item);
 }
 
 void Paper::roundToNearestCell(int &x, int &y, QPointF pos)

@@ -26,5 +26,6 @@ void Paper::onPenMouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		drawLineTo(event->scenePos());
 		inTheMiddleOfAStroke = false;
 		delete currentStrokePath;
+		emit itemModified(savableItems.find(currentStrokeItem).value(), currentStrokeItem);
 	}
 }

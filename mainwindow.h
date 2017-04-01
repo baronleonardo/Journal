@@ -25,8 +25,6 @@ private slots:
 	void on_actionText_triggered();
 	void on_actionSelect_triggered();
 
-	void on_actionSave_triggered();
-
 private:
 	PaperModel paperModel;
 	Paper *paper;

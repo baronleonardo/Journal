@@ -4,12 +4,14 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 						QMainWindow(parent),
-						ui(new Ui::MainWindow)
+						ui(new Ui::MainWindow),
+						paperModel(parent)
 {
 	ui->setupUi(this);
 	//this->setStyleSheet("background-color: #f8f8f8;");
 	setWindowSize();
 	paper = paperModel.loadPaper("{21519492-e41f-404b-b918-2b184b643831}");
+	connect(paper, &Paper::itemModified, &paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
 //	paper = new Paper();
 //	paper->setPaperID();
 	ui->graphicsView->setScene(paper);
@@ -21,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete ui;
+	delete paper;
 }
 
 void MainWindow::penColor()
@@ -72,9 +75,4 @@ void MainWindow::setWindowSize()
 {
 	QRectF screenSize = getScreenSize();
 	resize(screenSize.width(), screenSize.height());
-}
-
-void MainWindow::on_actionSave_triggered()
-{
-	paperModel.savePaper(paper);
 }
