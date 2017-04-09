@@ -13,6 +13,7 @@ class TextBox : public QObject
 	void setText();
 	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem*);
 	QGraphicsTextItem* text_cast(QGraphicsItem*);
+	void getTextWidthAndHeight(int &width, int &height);
 
 public:
 	Paper* m_paper;

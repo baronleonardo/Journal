@@ -12,8 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	paperModel = new PaperModel("default_paper");
 	paper = paperModel->getPaper();
 	connect(paper, &Paper::itemModified, paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-//	paper = new Paper();
-//	paper->setPaperID();
+
+	SelectTool* selectTool = new SelectTool(paper);
+	paper->setTool(selectTool);
+
 	ui->graphicsView->setScene(paper);
 	ui->graphicsView->setSceneRect(getScreenSize());
 

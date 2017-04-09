@@ -13,6 +13,19 @@ QGraphicsTextItem* TextBox::text_cast(QGraphicsItem* textItem)
 	return dynamic_cast<QGraphicsTextItem*>(textItem);
 }
 
+void TextBox::getTextWidthAndHeight(int &width, int &height)
+{
+	if(!m_textItem)
+		return;
+
+	if (QGraphicsSimpleTextItem* item = simpleText_cast(m_textItem))
+		width = (int)item->boundingRect().size().width() + 20;
+	else if (QGraphicsTextItem* item = text_cast(m_textItem))
+		width = (int)item->document()->documentLayout()->documentSize().width() + 10;
+
+	height = (int)m_textItem->boundingRect().size().height() + 10;
+}
+
 QGraphicsSimpleTextItem* TextBox::simpleText_cast(QGraphicsItem* textItem)
 {
 	return dynamic_cast<QGraphicsSimpleTextItem*>(textItem);
@@ -37,8 +50,11 @@ TextBox::TextBox(Paper* paper, QGraphicsItem* textItem)
 	m_textEdit->move((int)m_textItem->scenePos().x(), (int)m_textItem->scenePos().y());
 	m_textEdit->setCursorWidth(3);
 	setText();
-	m_textEdit->setFixedWidth(m_textItem->boundingRect().width() + 10);
-	m_textEdit->setFixedHeight(m_textItem->boundingRect().height() + 10);
+
+	int width = 0, height = 0;
+	getTextWidthAndHeight(width, height);
+	m_textEdit->resize(width, height);
+
 	m_textEdit->setFocus();
 	m_proxyText = m_paper->addWidget(m_textEdit);
 	m_proxyText->setFocus();
@@ -57,10 +73,15 @@ bool TextBox::amIClicked(QGraphicsSceneMouseEvent *event)
 {
 	QPointF clickPosition = event->scenePos();
 
-	if (clickPosition.x() > m_textEdit->pos().x() &&
-		clickPosition.x() < m_textEdit->width()   &&
-		clickPosition.y() > m_textEdit->pos().y() &&
-		clickPosition.y() < m_textEdit->height())
+	qreal x = m_textEdit->pos().x();
+	qreal y = m_textEdit->pos().y();
+	qreal width = m_textEdit->width();
+	qreal height = m_textEdit->height();
+
+	if (clickPosition.x() > x			&&
+		clickPosition.x() < x + width   &&
+		clickPosition.y() > y			&&
+		clickPosition.y() < y + height)
 		return true;
 
 	return false;

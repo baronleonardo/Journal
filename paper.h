@@ -18,21 +18,12 @@
 
 #define CELL_SIZE 15
 
-enum InteractionMode
-{
-	Drawing,
-	Selecting,
-	InsertingText,
-	EditingText
-};
-
 class Paper : public QGraphicsScene
 {
 	Q_OBJECT
 
 public:
 	QUuid id;
-	InteractionMode mode;
 	QHash<QGraphicsItem*, QUuid> savableItems;
 
 	Paper(QWidget *parent = 0);

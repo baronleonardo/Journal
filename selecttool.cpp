@@ -25,14 +25,12 @@ void SelectTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 		return;
 
 	selectedItem = m_paper->itemAt(event->scenePos(), QTransform());
-	QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
-
 	m_dragged = selectedItem;
 
 	if (m_dragged)
 		m_dragOffset = event->scenePos() - m_dragged->pos();
 
-	if(!selectedTextItem && m_textBox)
+	if(m_textBox && !m_textBox->amIClicked(event))
 	{
 		delete m_textBox;
 		m_textBox = nullptr;
@@ -44,8 +42,8 @@ void SelectTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void SelectTool::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+	// Ensure that the item's offset from the mouse cursor stays the same.
 	if (m_dragged)
-		// Ensure that the item's offset from the mouse cursor stays the same.
 		m_dragged->setPos(event->scenePos() - m_dragOffset);
 	else
 		m_paper->graphicsSceneMoveEvent(event);
@@ -61,10 +59,9 @@ void SelectTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 	}
 
 	if(m_dragged)
-	{
 		m_paper->emitItemModified(m_dragged);
-		m_dragged = nullptr;
-	}
+
+	m_dragged = nullptr;
 
 	m_paper->graphicsSceneReleaseEvent(event);
 }

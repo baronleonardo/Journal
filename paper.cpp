@@ -5,7 +5,6 @@
 
 Paper::Paper(QWidget *parent) : QGraphicsScene(parent), mCellSize(15, 15)
 {
-	mode = InteractionMode::Selecting; // general mode is drawing
 	currentTool = nullptr;
 }
 
@@ -83,8 +82,7 @@ void Paper::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void Paper::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-	if(mode == InteractionMode::Selecting)
-		QGraphicsScene::dropEvent(event);
+	QGraphicsScene::dropEvent(event);
 
 	if(event->mimeData()->hasUrls()) //TODO: make sure it's a photo and add support to all file types ever
 		onMediaFileDropEvent(event);
