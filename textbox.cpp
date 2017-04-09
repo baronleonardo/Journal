@@ -2,9 +2,20 @@
 
 void TextBox::setText()
 {
-	QGraphicsSimpleTextItem* item = dynamic_cast<QGraphicsSimpleTextItem*>(m_textItem);
-	if (item)
+	if (QGraphicsSimpleTextItem* item = simpleText_cast(m_textItem))
 		m_textEdit->setText(item->text());
+	else if (QGraphicsTextItem* item = text_cast(m_textItem))
+		m_textEdit->setDocument(item->document());
+}
+
+QGraphicsTextItem* TextBox::text_cast(QGraphicsItem* textItem)
+{
+	return dynamic_cast<QGraphicsTextItem*>(textItem);
+}
+
+QGraphicsSimpleTextItem* TextBox::simpleText_cast(QGraphicsItem* textItem)
+{
+	return dynamic_cast<QGraphicsSimpleTextItem*>(textItem);
 }
 
 TextBox::TextBox() : QObject()
@@ -15,7 +26,7 @@ TextBox::TextBox() : QObject()
 	m_textEdit = nullptr;
 }
 
-TextBox::TextBox(Paper * paper, QGraphicsItem * textItem)
+TextBox::TextBox(Paper* paper, QGraphicsItem* textItem)
 {
 	m_paper = paper;
 	m_textItem = textItem;
@@ -23,9 +34,11 @@ TextBox::TextBox(Paper * paper, QGraphicsItem * textItem)
 	m_textEdit = new QTextEdit();
 	connect(m_textEdit, &QTextEdit::textChanged,
 			this, &TextBox::textChanged);
-	m_textEdit->move((int)m_textItem->scenePos().x() - 10, (int)m_textItem->scenePos().y());
+	m_textEdit->move((int)m_textItem->scenePos().x(), (int)m_textItem->scenePos().y());
 	m_textEdit->setCursorWidth(3);
 	setText();
+	m_textEdit->setFixedWidth(m_textItem->boundingRect().width() + 10);
+	m_textEdit->setFixedHeight(m_textItem->boundingRect().height() + 10);
 	m_textEdit->setFocus();
 	m_proxyText = m_paper->addWidget(m_textEdit);
 	m_proxyText->setFocus();

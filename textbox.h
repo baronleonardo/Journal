@@ -11,13 +11,15 @@ class TextBox : public QObject
 	QGraphicsProxyWidget* m_proxyText;
 
 	void setText();
+	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem*);
+	QGraphicsTextItem* text_cast(QGraphicsItem*);
 
 public:
 	Paper* m_paper;
 	QGraphicsItem* m_textItem;
 
 	TextBox();
-	TextBox(Paper*, QGraphicsItem*);
+	TextBox(Paper *, QGraphicsItem *);
 	~TextBox();
 	bool amIClicked(QGraphicsSceneMouseEvent *event);
 	void textChanged();

@@ -2,7 +2,7 @@
 
 bool SelectTool::isAStroke(QGraphicsItem *item)
 {
-	QGraphicsPathItem* tmp = qgraphicsitem_cast<QGraphicsPathItem*>(item);
+	QGraphicsPathItem* tmp = dynamic_cast<QGraphicsPathItem*>(item);
 	return (tmp == nullptr) ? false : true;
 }
 
@@ -71,18 +71,28 @@ void SelectTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void SelectTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-	selectedItem = m_paper->itemAt(event->scenePos(), QTransform());
-	QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
-
-	if(!selectedTextItem && m_textBox)
+	if (m_textBox && !m_textBox->amIClicked(event))
 	{
 		delete m_textBox;
 		m_textBox = nullptr;
+	}
+
+	selectedItem = m_paper->itemAt(event->scenePos(), QTransform());
+	QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
+
+	if(selectedTextItem)
+	{
+		m_textBox = new TextBox(m_paper, selectedItem);
 		return;
 	}
 
-	if(selectedTextItem)
-		m_textBox = new TextBox(m_paper, selectedItem);
+	QGraphicsSimpleTextItem* selectedSimpleTextItem = dynamic_cast<QGraphicsSimpleTextItem*>(selectedItem);
 
-	m_paper->graphicsSceneDoubleClickEvent(event);
+	if(selectedSimpleTextItem)
+	{
+		m_textBox = new TextBox(m_paper, selectedItem);
+		return;
+	}
+
+	//m_paper->graphicsSceneDoubleClickEvent(event);
 }
