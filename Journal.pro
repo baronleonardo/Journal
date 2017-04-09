@@ -34,7 +34,10 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 DISTFILES += \
-    README.md
+    README.md \
+    uml.qmodel
 
 RESOURCES += \
     assets.qrc
+
+STATECHARTS +=
