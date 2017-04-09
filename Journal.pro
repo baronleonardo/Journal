@@ -34,4 +34,7 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 DISTFILES += \
-    pentool.cpp.bak
+    README.md
+
+RESOURCES += \
+    assets.qrc

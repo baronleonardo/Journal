@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/text_tool_icon.svg</file>
+        <file>assets/pencil.svg</file>
+        <file>assets/cursor.svg</file>
+    </qresource>
+</RCC>

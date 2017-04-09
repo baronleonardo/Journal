@@ -43,6 +43,10 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionDraw">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/assets/pencil.svg</normaloff>:/assets/pencil.svg</iconset>
+   </property>
    <property name="text">
     <string>Draw</string>
    </property>
@@ -51,6 +55,10 @@
    </property>
   </action>
   <action name="actionText">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/assets/text_tool_icon.svg</normaloff>:/assets/text_tool_icon.svg</iconset>
+   </property>
    <property name="text">
     <string>Text</string>
    </property>
@@ -62,6 +70,10 @@
    </property>
   </action>
   <action name="actionSelect">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/assets/cursor.svg</normaloff>:/assets/cursor.svg</iconset>
+   </property>
    <property name="text">
     <string>Select</string>
    </property>
@@ -74,6 +86,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="assets.qrc"/>
+ </resources>
  <connections/>
 </ui>
