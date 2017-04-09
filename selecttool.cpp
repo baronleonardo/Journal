@@ -9,7 +9,7 @@ bool SelectTool::isAStroke(QGraphicsItem *item)
 SelectTool::SelectTool(Paper* paper)
 {
 	m_paper = paper;
-	selectedItem = nullptr;
+    //selectedItem = nullptr;
 	m_textBox = nullptr;
 	m_dragged = nullptr;
 }
@@ -93,3 +93,18 @@ void SelectTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 	//m_paper->graphicsSceneDoubleClickEvent(event);
 }
+
+void SelectTool::keyPressEvent(QKeyEvent *event)
+{
+    qInfo("Detected a key press...");
+
+    //0x01000007 is the int for "Del"
+    if (event->key() == 0x01000007)
+    {
+        qInfo("Pressed Del");
+        if (selectedItem){
+            selectedItem->hide();
+        }
+    }
+}
+

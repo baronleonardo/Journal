@@ -19,6 +19,7 @@ public:
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) = 0;
+    virtual void keyPressEvent(QKeyEvent *event) = 0;
 
 signals:
 

@@ -75,6 +75,11 @@ void Paper::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 	if (currentTool) currentTool->mouseDoubleClickEvent(event);
 }
 
+void Paper::keyPressEvent(QKeyEvent *event)
+{
+    if (currentTool) currentTool->keyPressEvent(event);
+}
+
 void Paper::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
 
@@ -126,6 +131,7 @@ void Paper::graphicsSceneDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
 	QGraphicsScene::mouseDoubleClickEvent(event);
 }
+
 
 void Paper::initializeAndAddItemToScene(QGraphicsItem *item, QPointF position)
 {

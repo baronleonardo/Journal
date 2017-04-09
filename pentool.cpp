@@ -51,3 +51,8 @@ void PenTool::drawLineTo(const QPointF &endPoint)
 	currentStrokePath->lineTo(endPoint);
 	currentStrokeItem->setPath(*currentStrokePath);
 }
+
+void PenTool::keyPressEvent(QKeyEvent *event)
+{
+
+}
