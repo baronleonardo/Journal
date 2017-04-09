@@ -2,8 +2,8 @@
 # Journal
 a note taking application that is heavily inspired by OneNote.
 
-# UML
-![UML Diagram](/uml.png)
+# Class Diagram
+![Class Diagram](/uml.png)
 
 ## Dependencies
 This project is based on the wonderful Qt framework.
