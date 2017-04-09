@@ -1,48 +1,88 @@
-#include "paper.h"
+#include "selecttool.h"
 
-void Paper::onSelectMousePressEvent(QGraphicsSceneMouseEvent *event)
+bool SelectTool::isAStroke(QGraphicsItem *item)
 {
-	if(event->button() == Qt::LeftButton && mode == InteractionMode::EditingText)
-		handleMousePressWhileEditingText(event);
+	QGraphicsPathItem* tmp = qgraphicsitem_cast<QGraphicsPathItem*>(item);
+	return (tmp == nullptr) ? false : true;
+}
 
-	else if (event->button() == Qt::LeftButton && mode == InteractionMode::Selecting)
+SelectTool::SelectTool(Paper* paper)
+{
+	m_paper = paper;
+	selectedItem = nullptr;
+	m_textBox = nullptr;
+	m_dragged = nullptr;
+}
+
+SelectTool::~SelectTool()
+{
+	if (m_textBox) delete m_textBox;
+}
+
+void SelectTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	if (event->button() != Qt::LeftButton)
+		return;
+
+	selectedItem = m_paper->itemAt(event->scenePos(), QTransform());
+	QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
+
+	m_dragged = selectedItem;
+
+	if (m_dragged)
+		m_dragOffset = event->scenePos() - m_dragged->pos();
+
+	if(!selectedTextItem && m_textBox)
 	{
-		QGraphicsScene::mousePressEvent(event);
-		selectedItem = itemAt(event->scenePos(), QTransform());
-		QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
-
-		if(!selectedTextItem)
-		{
-			deselect();
-			return;
-		}
-
-		textEdit = new QTextEdit();
-		connect(textEdit, &QTextEdit::textChanged,
-				this, &Paper::textChanged);
-		textEdit->resize((int)selectedTextItem->boundingRect().size().width() + 5,
-						 (int)selectedTextItem->boundingRect().size().height() + 5);
-		textEdit->move((int)selectedTextItem->pos().x(), (int)selectedTextItem->pos().y());
-		textEdit->setDocument(selectedTextItem->document());
-		textEdit->setCursorWidth(3);
-		textEdit->setFocus();
-		proxyText = addWidget(textEdit);
-		proxyText->setFocus();
-		mode = InteractionMode::EditingText;
+		delete m_textBox;
+		m_textBox = nullptr;
+		return;
 	}
 
-	else if(mode == InteractionMode::Selecting)
-		QGraphicsScene::mousePressEvent(event);
+	m_paper->graphicsScenePressEvent(event);
 }
 
-void Paper::onSelectMouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void SelectTool::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-	if(mode == InteractionMode::Selecting)
-		QGraphicsScene::mouseReleaseEvent(event);
+	if (m_dragged)
+		// Ensure that the item's offset from the mouse cursor stays the same.
+		m_dragged->setPos(event->scenePos() - m_dragOffset);
+	else
+		m_paper->graphicsSceneMoveEvent(event);
 }
 
-void Paper::onSelectMouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void SelectTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	if(mode == InteractionMode::Selecting  || mode == InteractionMode::EditingText)
-		QGraphicsScene::mouseReleaseEvent(event);
+	if (m_dragged && ! isAStroke(m_dragged))
+	{
+		int x, y;
+		m_paper->roundToNearestCell(x, y, m_dragged->scenePos());
+		m_dragged->setPos(x, y);
+	}
+
+	if(m_dragged)
+	{
+		m_paper->emitItemModified(m_dragged);
+		m_dragged = nullptr;
+	}
+
+	m_paper->graphicsSceneReleaseEvent(event);
+}
+
+void SelectTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+	selectedItem = m_paper->itemAt(event->scenePos(), QTransform());
+	QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
+
+	if(!selectedTextItem && m_textBox)
+	{
+		delete m_textBox;
+		m_textBox = nullptr;
+		return;
+	}
+
+	if(selectedTextItem)
+		m_textBox = new TextBox(m_paper, selectedItem);
+
+	m_paper->graphicsSceneDoubleClickEvent(event);
 }

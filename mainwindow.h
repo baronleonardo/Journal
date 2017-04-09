@@ -4,6 +4,9 @@
 #include <QMainWindow>
 
 #include "papermodel.h"
+#include "pentool.h"
+#include "selecttool.h"
+#include "texttool.h"
 
 namespace Ui {
 
@@ -17,10 +20,6 @@ class MainWindow : public QMainWindow
 protected:
 
 private slots:
-	void penColor();
-	void penWidth();
-	void about();
-
 	void on_actionDraw_triggered();
 	void on_actionText_triggered();
 	void on_actionSelect_triggered();

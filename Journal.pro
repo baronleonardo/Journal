@@ -15,13 +15,23 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     paper.cpp \
+    papermodel.cpp \
+    tool.cpp \
+    pentool.cpp \
     selecttool.cpp \
     texttool.cpp \
-    pentool.cpp \
-    papermodel.cpp
+    textbox.cpp
 
 HEADERS  += mainwindow.h \
     paper.h \
-    papermodel.h
+    papermodel.h \
+    tool.h \
+    pentool.h \
+    selecttool.h \
+    texttool.h \
+    textbox.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    pentool.cpp.bak

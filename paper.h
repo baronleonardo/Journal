@@ -14,19 +14,16 @@
 #include <QtWidgets>
 #include <math.h>
 
+#include "tool.h"
+
+#define CELL_SIZE 15
+
 enum InteractionMode
 {
 	Drawing,
 	Selecting,
 	InsertingText,
 	EditingText
-};
-
-enum Tool
-{
-	Select,
-	Pen,
-	Text
 };
 
 class Paper : public QGraphicsScene
@@ -36,23 +33,21 @@ class Paper : public QGraphicsScene
 public:
 	QUuid id;
 	InteractionMode mode;
-	Tool tool;
 	QHash<QGraphicsItem*, QUuid> savableItems;
 
 	Paper(QWidget *parent = 0);
 
-	void setPenColor(const QColor &newColor);
-	void setPenWidth(int newWidth);
-
-	QColor penColor() const { return myPenColor; }
-	int penWidth() const { return myPenWidth; }
-	void setMoving();
-	void setDrawing();
-	void setInsertingText();
-	void setSelect();
+	void setTool(Tool* p_tool);
 	void setPaperID(QUuid id);
 	void setPaperID();
 	void addSavableItem(QGraphicsItem* item, QUuid id);
+	void emitItemModified(QGraphicsItem* item);
+	void insertIntoSavableItems(QGraphicsItem* item);
+	void graphicsScenePressEvent(QGraphicsSceneMouseEvent *event);
+	void graphicsSceneMoveEvent(QGraphicsSceneMouseEvent *event);
+	void graphicsSceneReleaseEvent(QGraphicsSceneMouseEvent *event);
+	void graphicsSceneDoubleClickEvent(QGraphicsSceneMouseEvent *event);
+	void roundToNearestCell(int &x, int &y, QPointF pos);
 
 signals:
 	void itemModified(QUuid itemID, QGraphicsItem* item, QString itemPath = "");
@@ -63,52 +58,22 @@ protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void dragMoveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 	void drawBackground(QPainter *painter, const QRectF &rect) Q_DECL_OVERRIDE;
 
 private:
-	void drawLineTo(const QPointF &endPoint);
-	void deselect();
 
 	void onMediaFileDropEvent(QGraphicsSceneDragDropEvent *event);
 	void onSimpleTextDropEvent(QGraphicsSceneDragDropEvent *event);
 	void onTextDropEvent(QGraphicsSceneDragDropEvent *event);
-
-	void onSelectMousePressEvent(QGraphicsSceneMouseEvent *event);
-	void onTextMousePressEvent(QGraphicsSceneMouseEvent *event);
-	void onPenMousePressEvent(QGraphicsSceneMouseEvent *event);
-
-	void onSelectMouseMoveEvent(QGraphicsSceneMouseEvent *event);
-	void onTextMouseMoveEvent(QGraphicsSceneMouseEvent *event);
-	void onPenMouseMoveEvent(QGraphicsSceneMouseEvent *event);
-
-	void onSelectMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-	void onTextMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-	void onPenMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-	void handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event);
-
-	bool isAStroke(QGraphicsItem* item);
-	void roundToNearestCell(int &x, int &y, QPointF pos);
-	void insertIntoSavableItems(QGraphicsItem* item);
 	void initializeAndAddItemToScene(QGraphicsItem* item, QPointF position);
-
 	void textChanged();
 
-	bool inTheMiddleOfAStroke;
-	int myPenWidth;
-	QGraphicsItem* selectedItem;
-	QTextEdit* textEdit;
-	QGraphicsProxyWidget *proxyText;
-	QColor myPenColor;
+	Tool* currentTool;
 	QPointF lastPoint;
-	QPen myPen;
-	QPainterPath* currentStrokePath;
-	QGraphicsPathItem* currentStrokeItem;
 	const QSize mCellSize;
-	QGraphicsItem *mDragged;
-	QPointF mDragOffset;
 };
 
 #endif

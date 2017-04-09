@@ -6,17 +6,7 @@
 Paper::Paper(QWidget *parent) : QGraphicsScene(parent), mCellSize(15, 15)
 {
 	mode = InteractionMode::Selecting; // general mode is drawing
-	inTheMiddleOfAStroke = false;				 // but at this very moment we're not drawing
-	myPenWidth = 3;
-	myPenColor = Qt::black;
-	myPen = QPen(myPenColor, myPenWidth,
-				 Qt::SolidLine, Qt::RoundCap,
-				 Qt::RoundJoin);
-	selectedItem = nullptr;
-	textEdit = nullptr;
-	proxyText = nullptr;
-	currentStrokePath = nullptr;
-	currentStrokeItem = nullptr;
+	currentTool = nullptr;
 }
 
 // Efficiently draws a grid in the background.
@@ -32,38 +22,17 @@ void Paper::drawBackground(QPainter *painter, const QRectF &rect)
 		lines.append(QLineF(x, rect.top(), x, rect.bottom()));
 	for (qreal y = top; y < rect.bottom(); y += mCellSize.height())
 		lines.append(QLineF(rect.left(), y, rect.right(), y));
-	myPen.setColor(QColor(190,190,190,50));
+	QPen myPen(QColor(190,190,190,50));
 	painter->setPen(myPen);
-	myPen.setColor(myPenColor);
 	painter->drawLines(lines.data(), lines.size());
 }
 
-void Paper::setPenColor(const QColor &newColor)
+void Paper::setTool(Tool* p_tool)
 {
-	myPenColor = newColor;
-}
+	if(currentTool)
+		delete currentTool;
 
-void Paper::setPenWidth(int newWidth)
-{
-	myPenWidth = newWidth;
-}
-
-void Paper::setDrawing()
-{
-	mode = InteractionMode::Drawing;
-	tool = Tool::Pen;
-}
-
-void Paper::setInsertingText()
-{
-	mode = InteractionMode::InsertingText;
-	tool = Tool::Text;
-}
-
-void Paper::setSelect()
-{
-	mode = InteractionMode::Selecting;
-	tool = Tool::Select;
+	currentTool = p_tool;
 }
 
 void Paper::setPaperID(QUuid id)
@@ -82,79 +51,29 @@ void Paper::addSavableItem(QGraphicsItem *item, QUuid id)
 	savableItems.insert(item, id);
 }
 
-void Paper::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
+void Paper::emitItemModified(QGraphicsItem *item)
 {
-	QGraphicsItem* item = itemAt(event->scenePos(), QTransform());
-
-	if(!item || (item != selectedItem && item != proxyText))
-	{
-		emit itemModified(savableItems.find(selectedItem).value(), selectedItem);
-		deselect();
-		mode = InteractionMode::Selecting;
-		tool = Tool::Select;
-	}
-
-	QGraphicsScene::mousePressEvent(event);
-}
-
-bool Paper::isAStroke(QGraphicsItem* item)
-{
-	QGraphicsPathItem* tmp = qgraphicsitem_cast<QGraphicsPathItem*>(item);
-	return (tmp == nullptr) ? false : true;
+	emit itemModified(savableItems.find(item).value(), item);
 }
 
 void Paper::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-	mDragged = qgraphicsitem_cast<QGraphicsItem*>(itemAt(event->scenePos(), QTransform()));
-
-	if (mDragged) mDragOffset = event->scenePos() - mDragged->pos();
-	else QGraphicsScene::mousePressEvent(event);
-
-	if(tool == Tool::Select)
-		onSelectMousePressEvent(event);
-	else if (tool == Tool::Text)
-		onTextMousePressEvent(event);
-	else if (tool == Tool::Pen)
-		onPenMousePressEvent(event);
+	if (currentTool) currentTool->mousePressEvent(event);
 }
 
 void Paper::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-	if (mDragged)
-		// Ensure that the item's offset from the mouse cursor stays the same.
-		mDragged->setPos(event->scenePos() - mDragOffset);
-	else
-		QGraphicsScene::mouseMoveEvent(event);
-
-	if(tool == Tool::Select)
-		onSelectMouseMoveEvent(event);
-	else if (tool == Tool::Text)
-		onTextMouseMoveEvent(event);
-	else if (tool == Tool::Pen)
-		onPenMouseMoveEvent(event);
+	if (currentTool) currentTool->mouseMoveEvent(event);
 }
 
 void Paper::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	if(mDragged)
-		emit itemModified(savableItems.find(mDragged).value(), mDragged);
+	if (currentTool) currentTool->mouseReleaseEvent(event);
+}
 
-	if (mDragged && ! isAStroke(mDragged))
-	{
-		int x, y;
-		roundToNearestCell(x, y, mDragged->scenePos());
-		mDragged->setPos(x, y);
-		mDragged = 0;
-	}
-	else
-		QGraphicsScene::mouseReleaseEvent(event);
-
-	if(tool == Tool::Select)
-		onSelectMouseReleaseEvent(event);
-	else if (tool == Tool::Text)
-		onTextMouseReleaseEvent(event);
-	else if (tool == Tool::Pen)
-		onPenMouseReleaseEvent(event);
+void Paper::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+	if (currentTool) currentTool->mouseDoubleClickEvent(event);
 }
 
 void Paper::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
@@ -190,6 +109,26 @@ void Paper::insertIntoSavableItems(QGraphicsItem *item)
 	savableItems.insert(item, QUuid::createUuid());
 }
 
+void Paper::graphicsScenePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	QGraphicsScene::mousePressEvent(event);
+}
+
+void Paper::graphicsSceneMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+	QGraphicsScene::mouseMoveEvent(event);
+}
+
+void Paper::graphicsSceneReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+	QGraphicsScene::mouseReleaseEvent(event);
+}
+
+void Paper::graphicsSceneDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+	QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
 void Paper::initializeAndAddItemToScene(QGraphicsItem *item, QPointF position)
 {
 	item->setFlag(QGraphicsItem::ItemIsMovable);
@@ -201,30 +140,6 @@ void Paper::initializeAndAddItemToScene(QGraphicsItem *item, QPointF position)
 
 	addItem(item);
 	insertIntoSavableItems(item);
-}
-
-void Paper::drawLineTo(const QPointF &endPoint)
-{
-	currentStrokePath->lineTo(endPoint);
-	currentStrokeItem->setPath(*currentStrokePath);
-}
-
-void Paper::deselect()
-{
-	if (proxyText)
-	{
-		removeItem(proxyText);
-		proxyText = nullptr;
-	}
-
-	if (textEdit)
-	{
-		delete textEdit;
-		textEdit = nullptr;
-	}
-
-	if (selectedItem)
-		selectedItem = nullptr;
 }
 
 void Paper::onMediaFileDropEvent(QGraphicsSceneDragDropEvent *event)
@@ -248,20 +163,4 @@ void Paper::onTextDropEvent(QGraphicsSceneDragDropEvent *event)
 	item->setHtml(event->mimeData()->html());
 	initializeAndAddItemToScene(item, event->scenePos());
 	emit itemModified(savableItems.find(item).value(), item);
-}
-
-void Paper::textChanged()
-{
-	QGraphicsTextItem* selectedTextItem = dynamic_cast<QGraphicsTextItem*>(selectedItem);
-
-	if(selectedTextItem)
-	{
-		selectedTextItem->setDocument(textEdit->document());
-		return;
-	}
-
-	QGraphicsSimpleTextItem* selectedSimpleTextItem = dynamic_cast<QGraphicsSimpleTextItem*>(selectedItem);
-
-	if(selectedSimpleTextItem)
-		selectedSimpleTextItem->setText(textEdit->document()->toPlainText());
 }

@@ -1,36 +1,54 @@
-#include "paper.h"
+#include "texttool.h"
 
-void Paper::onTextMousePressEvent(QGraphicsSceneMouseEvent *event)
+TextTool::TextTool(Paper* paper)
 {
-	if(event->button() == Qt::LeftButton && mode == InteractionMode::EditingText)
-		handleMousePressWhileEditingText(event);
-
-	if (event->button() == Qt::LeftButton && mode == InteractionMode::InsertingText)
-	{
-		//selectedItem = addText("");
-		selectedItem = addSimpleText("");
-		insertIntoSavableItems(selectedItem);
-		selectedItem->setPos(event->scenePos());
-		selectedItem->setFlag(QGraphicsItem::ItemIsMovable);
-		textEdit = new QTextEdit();
-		connect(textEdit, &QTextEdit::textChanged,
-				this, &Paper::textChanged);
-		textEdit->move((int)event->scenePos().x() - 10, (int)event->scenePos().y());
-		textEdit->setCursorWidth(3);
-		textEdit->setFocus();
-		proxyText = addWidget(textEdit);
-		proxyText->setFocus();
-		mode = InteractionMode::EditingText;
-	}
+	m_paper = paper;
+	selectedItem = nullptr;
+	m_textBox = nullptr;
 }
 
-void Paper::onTextMouseMoveEvent(QGraphicsSceneMouseEvent *event)
+TextTool::~TextTool()
+{
+	if (m_textBox) delete m_textBox;
+}
+
+void TextTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	if(event->button() != Qt::LeftButton)
+		return;
+
+	handleMousePressWhileEditingText(event);
+	//selectedItem = addText("");
+	selectedItem = m_paper->addSimpleText("");
+	m_paper->insertIntoSavableItems(selectedItem);
+	selectedItem->setPos(event->scenePos());
+	selectedItem->setFlag(QGraphicsItem::ItemIsMovable);
+	m_textBox = new TextBox(m_paper, selectedItem);
+}
+
+void TextTool::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 
 }
 
-void Paper::onTextMouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void TextTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	if(mode == InteractionMode::EditingText)
-		QGraphicsScene::mouseReleaseEvent(event);
+	m_paper->graphicsSceneReleaseEvent(event);
+}
+
+void TextTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+	m_paper->graphicsSceneDoubleClickEvent(event);
+}
+
+void TextTool::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
+{
+	if (! m_textBox)
+		return;
+
+	if (m_textBox && m_textBox->amIClicked(event))
+		return;
+
+	if(m_textBox)
+		delete m_textBox;
 }

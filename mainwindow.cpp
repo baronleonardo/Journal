@@ -27,43 +27,22 @@ MainWindow::~MainWindow()
 	delete paperModel;
 }
 
-void MainWindow::penColor()
-{
-	QColor newColor = QColorDialog::getColor(paper->penColor());
-	if (newColor.isValid())
-		paper->setPenColor(newColor);
-}
-
-void MainWindow::penWidth()
-{
-	bool ok;
-	int newWidth = QInputDialog::getInt(this, tr("Scribble"),
-										tr("Select pen width:"),
-										paper->penWidth(),
-										1, 50, 1, &ok);
-	if (ok)
-		paper->setPenWidth(newWidth);
-}
-
-void MainWindow::about()
-{
-	QMessageBox::about(this, tr("About Scribble"),
-			tr("<p>The <b>Journal</b> app is a notes taking app inspired heavily by Microsoft OneNote.</p>"));
-}
-
 void MainWindow::on_actionDraw_triggered()
 {
-	paper->setDrawing();
+	PenTool* penTool = new PenTool(paper);
+	paper->setTool(penTool);
 }
 
 void MainWindow::on_actionText_triggered()
 {
-	paper->setInsertingText();
+	TextTool* textTool = new TextTool(paper);
+	paper->setTool(textTool);
 }
 
 void MainWindow::on_actionSelect_triggered()
 {
-	paper->setSelect();
+	SelectTool* selectTool = new SelectTool(paper);
+	paper->setTool(selectTool);
 }
 
 QRectF MainWindow::getScreenSize()
