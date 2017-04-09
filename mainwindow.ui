@@ -43,6 +43,9 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionDraw">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="assets.qrc">
      <normaloff>:/assets/pencil.svg</normaloff>:/assets/pencil.svg</iconset>
@@ -55,6 +58,9 @@
    </property>
   </action>
   <action name="actionText">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="assets.qrc">
      <normaloff>:/assets/text_tool_icon.svg</normaloff>:/assets/text_tool_icon.svg</iconset>
@@ -70,6 +76,9 @@
    </property>
   </action>
   <action name="actionSelect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="assets.qrc">
      <normaloff>:/assets/cursor.svg</normaloff>:/assets/cursor.svg</iconset>

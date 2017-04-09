@@ -24,18 +24,17 @@ private slots:
 	void on_actionText_triggered();
 	void on_actionSelect_triggered();
 
-private:
-	PaperModel *paperModel;
-	Paper *paper;
-	QRectF getScreenSize();
-	void setWindowSize();
-
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
 private:
 	Ui::MainWindow *ui;
+	PaperModel *paperModel;
+	Paper *paper;
+	QRectF getScreenSize();
+	void setWindowSize();
+	void uncheckAllExcept(QAction* action);
 };
 
 #endif // MAINWINDOW_H

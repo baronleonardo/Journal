@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	SelectTool* selectTool = new SelectTool(paper);
 	paper->setTool(selectTool);
+	ui->actionSelect->setChecked(true);
 
 	ui->graphicsView->setScene(paper);
 	ui->graphicsView->setSceneRect(getScreenSize());
@@ -31,18 +32,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionDraw_triggered()
 {
+	uncheckAllExcept(ui->actionDraw);
+
 	PenTool* penTool = new PenTool(paper);
 	paper->setTool(penTool);
 }
 
 void MainWindow::on_actionText_triggered()
-{
+{	
+	uncheckAllExcept(ui->actionText);
+
 	TextTool* textTool = new TextTool(paper);
 	paper->setTool(textTool);
 }
 
 void MainWindow::on_actionSelect_triggered()
 {
+	uncheckAllExcept(ui->actionSelect);
+
 	SelectTool* selectTool = new SelectTool(paper);
 	paper->setTool(selectTool);
 }
@@ -57,4 +64,12 @@ void MainWindow::setWindowSize()
 {
 	QRectF screenSize = getScreenSize();
 	resize(screenSize.width(), screenSize.height());
+}
+
+void MainWindow::uncheckAllExcept(QAction* action)
+{
+	foreach (QAction* a, ui->mainToolBar->actions())
+		a->setChecked(false);
+
+	action->setChecked(true);
 }
