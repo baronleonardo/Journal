@@ -11,7 +11,10 @@ This project is based on the wonderful Qt framework.
 If you're on Windows download and install it here: https://www.qt.io/download-open-source/
 If you're on Linux use your package manager.
 ### Ubuntu
-`sudo apt install sudo apt-get install qt5-default qttools5-dev-tools` (I don't have ubuntu, let me know if there are more packages the needs to be installed please).
+`sudo apt install sudo apt-get install qt5-default qttools5-dev-tools` 
+You'll also need the OpenGL include files, so use these as well:
+`sudo apt-get install mesa-common-dev`
+`sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev`
 ### Fedora
 `sudo dnf install qt5-qt*`
 ### Arch
@@ -31,4 +34,4 @@ Make sure you have the dependencies installed and then:
 * `cd build`
 *  if on Ubuntu: `qmake ..` if on Fedora `qmake-qt5 ..`
 *  `make`
-*  `./Jounral`
+*  `./Journal`
