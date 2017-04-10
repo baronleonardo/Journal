@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	paperModel = new PaperModel("default_paper");
 	paper = paperModel->getPaper();
 	connect(paper, &Paper::itemModified, paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-
+	connect(paper, &Paper::itemDeleted, paperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
 	SelectTool* selectTool = new SelectTool(paper);
 	paper->setTool(selectTool);
 	ui->actionSelect->setChecked(true);

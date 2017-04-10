@@ -55,6 +55,11 @@ void Paper::emitItemModified(QGraphicsItem *item)
 	emit itemModified(savableItems.find(item).value(), item);
 }
 
+void Paper::emitItemDeleted(QGraphicsItem *item)
+{
+	emit itemDeleted(savableItems.find(item).value(), item);
+}
+
 void Paper::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	if (currentTool) currentTool->mousePressEvent(event);
@@ -105,6 +110,13 @@ void Paper::roundToNearestCell(int &x, int &y, QPointF pos)
 {
 	x = round(pos.x() / mCellSize.width()) * mCellSize.width();
 	y = round(pos.y() / mCellSize.height()) * mCellSize.height();
+}
+
+void Paper::deleteItem(QGraphicsItem *item)
+{
+	emitItemDeleted(item);
+	removeItem(item);
+	savableItems.remove(item);
 }
 
 void Paper::insertIntoSavableItems(QGraphicsItem *item)

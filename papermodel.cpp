@@ -72,6 +72,25 @@ void PaperModel::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath 
 	saveToFile(QJsonDocument(*paperJson));
 }
 
+void PaperModel::onItemDeleted(QUuid id, QGraphicsItem *item, QString itemPath)
+{
+	QJsonObject::Iterator i = paperJson->find(id.toString());
+
+	if(i == paperJson->end())
+		return;
+
+	if (i.value().toObject()["type"] == "pixmap")
+	{
+		QFile photo(appDirectoryLocation + i.key());
+		if (photo.exists())
+			photo.remove();
+	}
+
+	paperJson->remove(i.key());
+
+	saveToFile(QJsonDocument(*paperJson));
+}
+
 QString PaperModel::copyMediaFileToJournal(QUuid id, QString path)
 {
 	QFile mediaFile(path);

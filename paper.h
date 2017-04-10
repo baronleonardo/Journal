@@ -33,15 +33,18 @@ public:
 	void setPaperID();
 	void addSavableItem(QGraphicsItem* item, QUuid id);
 	void emitItemModified(QGraphicsItem* item);
+	void emitItemDeleted(QGraphicsItem* item);
 	void insertIntoSavableItems(QGraphicsItem* item);
 	void graphicsScenePressEvent(QGraphicsSceneMouseEvent *event);
 	void graphicsSceneMoveEvent(QGraphicsSceneMouseEvent *event);
 	void graphicsSceneReleaseEvent(QGraphicsSceneMouseEvent *event);
 	void graphicsSceneDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 	void roundToNearestCell(int &x, int &y, QPointF pos);
+	void deleteItem(QGraphicsItem* item);
 
 signals:
 	void itemModified(QUuid itemID, QGraphicsItem* item, QString itemPath = "");
+	void itemDeleted(QUuid itemID, QGraphicsItem* item, QString itemPath = "");
 
 public slots:
 

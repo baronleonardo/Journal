@@ -96,13 +96,11 @@ void SelectTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void SelectTool::keyPressEvent(QKeyEvent *event)
 {
-
     if (event->key() == Qt::Key_Delete)
-    {
-        if (selectedItem){
-            // Still need to remove the "selectedItem" from "savableItems"
-            delete selectedItem;
+		if (selectedItem)
+		{
+			m_paper->deleteItem(selectedItem);
+			selectedItem = nullptr;
         }
-    }
 }
 
