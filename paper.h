@@ -24,6 +24,7 @@ class Paper : public QGraphicsScene
 
 public:
 	QUuid id;
+    QString name;
 	QHash<QGraphicsItem*, QUuid> savableItems;
 
 	Paper(QWidget *parent = 0);

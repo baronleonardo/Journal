@@ -10,17 +10,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	//this->setStyleSheet("background-color: #f8f8f8;");
 	setWindowSize();
 	paperModel = new PaperModel("default_paper");
-	paper = paperModel->getPaper();
-	connect(paper, &Paper::itemModified, paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-	connect(paper, &Paper::itemDeleted, paperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
-	SelectTool* selectTool = new SelectTool(paper);
-	paper->setTool(selectTool);
+    currentPaper = paperModel->getPaper();
+    connect(currentPaper, &Paper::itemModified, paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
+    connect(currentPaper, &Paper::itemDeleted, paperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+    SelectTool* selectTool = new SelectTool(currentPaper);
+    currentPaper->setTool(selectTool);
 	ui->actionSelect->setChecked(true);
 
-	ui->graphicsView->setScene(paper);
+    ui->graphicsView->setScene(currentPaper);
 	ui->graphicsView->setSceneRect(getScreenSize());
 
-    QVector<Paper*> allPapers = paperModel->getAllPapers();
+    allPapers = paperModel->getAllPapers();
 
     QStringList labels;
     for (auto storedPaper : allPapers)
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete ui;
-	delete paper;
+    delete currentPaper;
 	delete paperModel;
 }
 
@@ -42,24 +42,24 @@ void MainWindow::on_actionDraw_triggered()
 {
 	uncheckAllExcept(ui->actionDraw);
 
-	PenTool* penTool = new PenTool(paper);
-	paper->setTool(penTool);
+    PenTool* penTool = new PenTool(currentPaper);
+    currentPaper->setTool(penTool);
 }
 
 void MainWindow::on_actionText_triggered()
 {	
 	uncheckAllExcept(ui->actionText);
 
-	TextTool* textTool = new TextTool(paper);
-	paper->setTool(textTool);
+    TextTool* textTool = new TextTool(currentPaper);
+    currentPaper->setTool(textTool);
 }
 
 void MainWindow::on_actionSelect_triggered()
 {
 	uncheckAllExcept(ui->actionSelect);
 
-	SelectTool* selectTool = new SelectTool(paper);
-	paper->setTool(selectTool);
+    SelectTool* selectTool = new SelectTool(currentPaper);
+    currentPaper->setTool(selectTool);
 }
 
 QRectF MainWindow::getScreenSize()
@@ -80,4 +80,12 @@ void MainWindow::uncheckAllExcept(QAction* action)
 		a->setChecked(false);
 
 	action->setChecked(true);
+}
+
+void MainWindow::on_listWidget_itemSelectionChanged()
+{
+    currentPaper = allPapers[ui->listWidget->currentIndex().row()];
+    ui->graphicsView->setScene(currentPaper);
+    connect(currentPaper, &Paper::itemModified, paperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
+    connect(currentPaper, &Paper::itemDeleted, paperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
 }
