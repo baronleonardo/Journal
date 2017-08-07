@@ -7,6 +7,7 @@
 #include "pentool.h"
 #include "selecttool.h"
 #include "texttool.h"
+#include "paperlist.h"
 
 namespace Ui {
 
@@ -31,6 +32,7 @@ public:
 private:
 	Ui::MainWindow *ui;
 	PaperModel *paperModel;
+    PaperList *paperList;
 	Paper *paper;
 	QRectF getScreenSize();
 	void setWindowSize();

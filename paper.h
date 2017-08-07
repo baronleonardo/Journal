@@ -29,6 +29,7 @@ public:
 	Paper(QWidget *parent = 0);
 
 	void setTool(Tool* p_tool);
+    void setPaperID(QString id);
 	void setPaperID(QUuid id);
 	void setPaperID();
 	void addSavableItem(QGraphicsItem* item, QUuid id);

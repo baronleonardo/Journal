@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     pentool.cpp \
     selecttool.cpp \
     texttool.cpp \
-    textbox.cpp
+    textbox.cpp \
+    paperlist.cpp
 
 HEADERS  += mainwindow.h \
     paper.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     pentool.h \
     selecttool.h \
     texttool.h \
-    textbox.h
+    textbox.h \
+    paperlist.h
 
 FORMS    += mainwindow.ui
 

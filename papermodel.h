@@ -40,9 +40,11 @@ protected:
 signals:
 
 public:
+    PaperModel();
 	PaperModel(QString path);
 	~PaperModel();
 
+    QVector<Paper*> getAllPapers();
 	Paper* loadPaper(QString path);
 	void savePaper(Paper* paper);
 	Paper *getPaper() const;

@@ -189,22 +189,43 @@ QPainterPath PaperModel::getPathFromPoints(QList<QVariant> points)
 	return path;
 }
 
-PaperModel::PaperModel(QString path) : QThread(), appDirectoryName("/journal/")
+PaperModel::PaperModel(QString path) : PaperModel()
 {
-	QString configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
-	appDirectoryLocation = configLocation + appDirectoryName;
-
-	QDir dir;
-	if(!dir.exists(appDirectoryLocation))
-		dir.mkdir(appDirectoryLocation);
-
-	paperFile = new QFile(appDirectoryLocation + path);
+    paperFile = nullptr;
 	paper = loadPaper(path);
+}
+
+PaperModel::PaperModel() : QThread(), appDirectoryName("/journal/")
+{
+    QString configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
+    appDirectoryLocation = configLocation + appDirectoryName;
+
+    QDir dir;
+    if(!dir.exists(appDirectoryLocation))
+        dir.mkdir(appDirectoryLocation);
 }
 
 PaperModel::~PaperModel()
 {
-	paperFile->close();
+    paperFile->close();
+}
+
+QVector<Paper *> PaperModel::getAllPapers()
+{
+    QDir dir(appDirectoryLocation);
+    QStringList directoryContent = dir.entryList();
+    QVector<Paper*> papers;
+
+    for(auto entry : directoryContent)
+    {
+        if (entry == "." || entry == "..")
+            continue;
+
+        Paper* newPaper = loadPaper(entry);
+        papers.push_back(newPaper);
+    }
+
+    return papers;
 }
 
 Paper *PaperModel::loadPaper(QString path)
@@ -213,6 +234,10 @@ Paper *PaperModel::loadPaper(QString path)
 
 	newPaper->setPaperID(path);
 
+    if (paperFile)
+        delete paperFile;
+
+    paperFile = new QFile(appDirectoryLocation + path);
 	paperFile->open(QIODevice::ReadOnly);
 
 	QByteArray byteArray = paperFile->readAll();

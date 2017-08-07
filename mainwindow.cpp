@@ -20,6 +20,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->graphicsView->setScene(paper);
 	ui->graphicsView->setSceneRect(getScreenSize());
 
+    QVector<Paper*> allPapers = paperModel->getAllPapers();
+
+    QStringList labels;
+    for (auto storedPaper : allPapers)
+        labels.push_back(storedPaper->id.toString());
+
+    ui->listWidget->addItems(labels);
+
 	setWindowTitle(tr("Journal"));
 }
 

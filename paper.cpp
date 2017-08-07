@@ -31,7 +31,13 @@ void Paper::setTool(Tool* p_tool)
 	if(currentTool)
 		delete currentTool;
 
-	currentTool = p_tool;
+    currentTool = p_tool;
+}
+
+void Paper::setPaperID(QString p_id)
+{
+    QUuid id(p_id);
+    setPaperID(id);
 }
 
 void Paper::setPaperID(QUuid id)
