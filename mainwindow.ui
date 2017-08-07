@@ -26,7 +26,13 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="PaperList" name="listWidget"/>
+     <widget class="PaperList" name="listWidget">
+      <item>
+       <property name="text">
+        <string>New Paper</string>
+       </property>
+      </item>
+     </widget>
     </item>
    </layout>
   </widget>
