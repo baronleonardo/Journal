@@ -28,6 +28,7 @@ private:
 	QGraphicsPixmapItem* pixmap_cast(QGraphicsItem* item);
 	QGraphicsPathItem* pathItem_cast(QGraphicsItem* item);
 	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem* item);
+    QGraphicsPathItem* pathItem_static_cast(QGraphicsItem *item);
 	QGraphicsTextItem* text_cast(QGraphicsItem* item);
 
 public slots:

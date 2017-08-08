@@ -42,7 +42,13 @@ QGraphicsItem* PaperModel::itemFromJson(QJsonObject data, QString mediaFileLocat
 	if (data["type"] == "pixmap")
 		result = new QGraphicsPixmapItem(QPixmap(mediaFileLocation));
 	else if(data["type"] == "stroke")
-		result = new QGraphicsPathItem(getPathFromJson(data["path"]));
+    {
+        result = new QGraphicsPathItem(getPathFromJson(data["path"]));
+        QPen defaultPen = QPen(Qt::black, 3.0,
+                     Qt::SolidLine, Qt::RoundCap,
+                     Qt::RoundJoin);
+        pathItem_static_cast(result)->setPen(defaultPen);
+    }
 	else if(data["type"] == "simpletext")
 		result = new QGraphicsSimpleTextItem(data["text"].toString());
 	else if(data["type"] == "richtext")
@@ -120,6 +126,11 @@ QGraphicsPixmapItem* PaperModel::pixmap_cast(QGraphicsItem *item)
 QGraphicsPathItem* PaperModel::pathItem_cast(QGraphicsItem *item)
 {
 	return dynamic_cast<QGraphicsPathItem*>(item);
+}
+
+QGraphicsPathItem* PaperModel::pathItem_static_cast(QGraphicsItem *item)
+{
+    return static_cast<QGraphicsPathItem*>(item);
 }
 
 QGraphicsSimpleTextItem* PaperModel::simpleText_cast(QGraphicsItem *item)
