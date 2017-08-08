@@ -28,7 +28,6 @@ public:
 	QHash<QGraphicsItem*, QUuid> savableItems;
 
 	Paper(QWidget *parent = 0);
-    Paper(QString p_name, QWidget *parent = 0);
 
 	void setTool(Tool* p_tool);
     void setPaperID(QString id);
@@ -44,6 +43,7 @@ public:
 	void graphicsSceneDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 	void roundToNearestCell(int &x, int &y, QPointF pos);
 	void deleteItem(QGraphicsItem* item);
+    void generateId();
 
 signals:
 	void itemModified(QUuid itemID, QGraphicsItem* item, QString itemPath = "");

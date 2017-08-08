@@ -202,12 +202,12 @@ QPainterPath PaperModel::getPathFromPoints(QList<QVariant> points)
 
 PaperModel::PaperModel(QString path) : PaperModel()
 {
-    paperFile = nullptr;
 	paper = loadPaper(path);
 }
 
 PaperModel::PaperModel() : QThread(), appDirectoryName("/journal/")
 {
+    paperFile = nullptr;
     QString configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
     appDirectoryLocation = configLocation + appDirectoryName;
 
@@ -283,7 +283,7 @@ void PaperModel::savePaper(Paper *paper)
 		i.next();
 		paperJson->insert(i.value().toString(), itemToJson(i.key()));
 	}
-    paperJson->insert(paper->name, "name");
+    paperJson->insert("name", paper->name);
 
 	QJsonDocument jsonDocument(*paperJson);
 

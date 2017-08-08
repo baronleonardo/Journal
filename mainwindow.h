@@ -14,6 +14,8 @@ namespace Ui {
 class MainWindow;
 }
 
+typedef std::pair<Paper*, PaperModel*> paperAndModelPair;
+
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -32,11 +34,12 @@ public:
 	~MainWindow();
 
 private:
+
 	Ui::MainWindow *ui;
-	PaperModel *paperModel;
     PaperList *paperList;
     Paper *currentPaper;
-    QVector<Paper*> allPapers;
+    PaperModel *currentPaperModel;
+    QVector<paperAndModelPair> allPapers;
 	QRectF getScreenSize();
 	void setWindowSize();
 	void uncheckAllExcept(QAction* action);

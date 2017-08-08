@@ -11,12 +11,6 @@ Paper::Paper(QWidget *parent) : QGraphicsScene(parent), mCellSize(15, 15)
     name = generateRandomName();
 }
 
-Paper::Paper(QString p_name, QWidget *parent)
-{
-    currentTool = nullptr;
-    name = p_name;
-}
-
 // Efficiently draws a grid in the background.
 // For more information: http://www.qtcentre.org/threads/5609-Drawing-grids-efficiently-in-QGraphicsScene?p=28905#post28905
 void Paper::drawBackground(QPainter *painter, const QRectF &rect)
@@ -131,7 +125,12 @@ void Paper::deleteItem(QGraphicsItem *item)
 {
 	emitItemDeleted(item);
 	removeItem(item);
-	savableItems.remove(item);
+    savableItems.remove(item);
+}
+
+void Paper::generateId()
+{
+    id = QUuid::createUuid();
 }
 
 void Paper::insertIntoSavableItems(QGraphicsItem *item)
