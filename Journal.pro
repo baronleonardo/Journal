@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Journal
 TEMPLATE = app
+CONFIG += console
 
 
 SOURCES += main.cpp\
@@ -31,7 +32,8 @@ HEADERS  += mainwindow.h \
     selecttool.h \
     texttool.h \
     textbox.h \
-    paperlist.h
+    paperlist.h \
+    huge_dictionary.h
 
 FORMS    += mainwindow.ui
 

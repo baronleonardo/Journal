@@ -1,11 +1,20 @@
 #include <QtWidgets>
 #include <iostream>
-
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>
+#include "huge_dictionary.h"
 #include "paper.h"
 
 Paper::Paper(QWidget *parent) : QGraphicsScene(parent), mCellSize(15, 15)
 {
 	currentTool = nullptr;
+    name = generateRandomName();
+}
+
+Paper::Paper(QString p_name, QWidget *parent)
+{
+    currentTool = nullptr;
+    name = p_name;
 }
 
 // Efficiently draws a grid in the background.
@@ -161,7 +170,19 @@ void Paper::initializeAndAddItemToScene(QGraphicsItem *item, QPointF position)
 	item->setPos(x, y);
 
 	addItem(item);
-	insertIntoSavableItems(item);
+    insertIntoSavableItems(item);
+}
+
+QString Paper::generateRandomName()
+{
+    srand (time(NULL));
+    /* generate secret number between 1 and 10: */
+    int index = rand() % 9903;
+    QString newName = QString::fromStdString(huge_dictionary[index] + " ");
+    //srand (time(NULL));
+    index = rand() % 9903;
+    newName += QString::fromStdString(huge_dictionary[index]);
+    return newName;
 }
 
 void Paper::onMediaFileDropEvent(QGraphicsSceneDragDropEvent *event)

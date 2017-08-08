@@ -45,8 +45,8 @@ QGraphicsItem* PaperModel::itemFromJson(QJsonObject data, QString mediaFileLocat
     {
         result = new QGraphicsPathItem(getPathFromJson(data["path"]));
         QPen defaultPen = QPen(Qt::black, 3.0,
-                     Qt::SolidLine, Qt::RoundCap,
-                     Qt::RoundJoin);
+                               Qt::SolidLine, Qt::RoundCap,
+                               Qt::RoundJoin);
         pathItem_static_cast(result)->setPen(defaultPen);
     }
 	else if(data["type"] == "simpletext")
@@ -267,6 +267,8 @@ Paper *PaperModel::loadPaper(QString path)
 		newPaper->addSavableItem(item, QUuid(i.key()));
 	}
 
+    newPaper->name = paperJson->value("name").toString();
+
 	return newPaper;
 }
 
@@ -281,6 +283,7 @@ void PaperModel::savePaper(Paper *paper)
 		i.next();
 		paperJson->insert(i.value().toString(), itemToJson(i.key()));
 	}
+    paperJson->insert(paper->name, "name");
 
 	QJsonDocument jsonDocument(*paperJson);
 

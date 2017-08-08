@@ -28,6 +28,7 @@ public:
 	QHash<QGraphicsItem*, QUuid> savableItems;
 
 	Paper(QWidget *parent = 0);
+    Paper(QString p_name, QWidget *parent = 0);
 
 	void setTool(Tool* p_tool);
     void setPaperID(QString id);
@@ -67,6 +68,7 @@ private:
 	void onTextDropEvent(QGraphicsSceneDragDropEvent *event);
 	void initializeAndAddItemToScene(QGraphicsItem* item, QPointF position);
 	void textChanged();
+    QString generateRandomName();
 
 	Tool* currentTool;
 	QPointF lastPoint;

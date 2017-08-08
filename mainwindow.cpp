@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QStringList labels;
     for (auto storedPaper : allPapers)
-        labels.push_back(storedPaper->id.toString());
+        labels.push_back(storedPaper->name);
 
     ui->listWidget->addItems(labels);
 
@@ -85,7 +85,9 @@ void MainWindow::uncheckAllExcept(QAction* action)
 void MainWindow::on_listWidget_itemSelectionChanged()
 {
     if (ui->listWidget->currentIndex().row() == 0)
+    {
         return;
+    }
 
     currentPaper = allPapers[ui->listWidget->currentIndex().row() - 1]; // -1 because the first item is to add a new paper
     ui->graphicsView->setScene(currentPaper);
