@@ -55,9 +55,9 @@ TextBox::TextBox(Paper* paper, QGraphicsItem* textItem)
 	getTextWidthAndHeight(width, height);
 	m_textEdit->resize(width, height);
 
-	m_textEdit->setFocus();
+    m_textEdit->setFocus();
 	m_proxyText = m_paper->addWidget(m_textEdit);
-	m_proxyText->setFocus();
+    m_proxyText->setFocus();
 }
 
 TextBox::~TextBox()

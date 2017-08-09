@@ -18,17 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
         labels.push_back(storedPaper->name);
         allPapers.push_back(paperAndModelPair(storedPaper, new PaperModel(storedPaper->id.toString())));
     }
-    currentPaper      = allPapers[0].first;
-    currentPaperModel = allPapers[0].second;
-    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+
+    setCurrentPaper(allPapers[0]);
+
     SelectTool* selectTool = new SelectTool(currentPaper);
     currentPaper->setTool(selectTool);
+
 	ui->actionSelect->setChecked(true);
-
-    ui->graphicsView->setScene(currentPaper);
 	ui->graphicsView->setSceneRect(getScreenSize());
-
     ui->listWidget->addItems(labels);
 
 	setWindowTitle(tr("Journal"));
@@ -82,28 +79,35 @@ void MainWindow::uncheckAllExcept(QAction* action)
 	foreach (QAction* a, ui->mainToolBar->actions())
 		a->setChecked(false);
 
-	action->setChecked(true);
+    action->setChecked(true);
+}
+
+void MainWindow::createNewPaper()
+{
+    currentPaper = new Paper();
+    currentPaper->generateId();
+    allPapers.push_back(paperAndModelPair(currentPaper, currentPaperModel = new PaperModel(currentPaper->id.toString())));
+    ui->listWidget->addItem(currentPaper->name);
+    ui->graphicsView->setScene(currentPaper);
+    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
+    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+    currentPaperModel->savePaper(currentPaper);
+}
+
+void MainWindow::setCurrentPaper(paperAndModelPair p_paper)
+{
+    currentPaper = p_paper.first;
+    currentPaperModel = p_paper.second;
+    ui->graphicsView->setScene(currentPaper);
+    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
+    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
 }
 
 void MainWindow::on_listWidget_itemSelectionChanged()
 {
     if (ui->listWidget->currentIndex().row() == 0)
-    {
-        currentPaper = new Paper();
-        currentPaper->generateId();
-        allPapers.push_back(paperAndModelPair(currentPaper, currentPaperModel = new PaperModel(currentPaper->id.toString())));
-        ui->listWidget->addItem(currentPaper->name);
-        ui->graphicsView->setScene(currentPaper);
-        connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-        connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
-        currentPaperModel->savePaper(currentPaper);
-        return;
-    }
-
-    currentPaper = allPapers[ui->listWidget->currentIndex().row() - 1].first; // -1 because the first item is to add a new paper
-    qDebug() << ui->listWidget->currentIndex().row();
-    ui->graphicsView->setScene(currentPaper);
-    currentPaperModel = allPapers[ui->listWidget->currentIndex().row() - 1].second;
-    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+        createNewPaper();
+    else
+        setCurrentPaper( // -1 because the first item is to add a new paper
+                    allPapers[ ui->listWidget->currentIndex().row() - 1 ] );
 }

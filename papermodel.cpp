@@ -264,7 +264,8 @@ Paper *PaperModel::loadPaper(QString path)
 	{
 		QString itemPath = getAbsolutePath(i.key());
 		QGraphicsItem* item = itemFromJson(i.value().toObject(), itemPath);
-		newPaper->addSavableItem(item, QUuid(i.key()));
+        if(item)
+            newPaper->addSavableItem(item, QUuid(i.key()));
 	}
 
     newPaper->name = paperJson->value("name").toString();

@@ -43,6 +43,8 @@ private:
 	QRectF getScreenSize();
 	void setWindowSize();
 	void uncheckAllExcept(QAction* action);
+    void createNewPaper();
+    void setCurrentPaper(paperAndModelPair p_paper);
 };
 
 #endif // MAINWINDOW_H
