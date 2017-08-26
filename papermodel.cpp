@@ -218,7 +218,8 @@ PaperModel::PaperModel() : QThread(), appDirectoryName("/journal/")
 
 PaperModel::~PaperModel()
 {
-    paperFile->close();
+    if (paperFile)
+        paperFile->close();
 }
 
 QVector<Paper *> PaperModel::getAllPapers()

@@ -53,8 +53,7 @@ void TextTool::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 		delete m_textBox;
 }
 
-
-void TextTool::keyPressEvent(QKeyEvent *event)
-{
-
-}
+//void TextTool::keyPressEvent(QKeyEvent *event)
+//{
+//    m_textBox->keyPressEvent(event);
+//}

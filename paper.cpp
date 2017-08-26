@@ -89,10 +89,10 @@ void Paper::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 	if (currentTool) currentTool->mouseDoubleClickEvent(event);
 }
 
-void Paper::keyPressEvent(QKeyEvent *event)
-{
-    if (currentTool) currentTool->keyPressEvent(event);
-}
+//void Paper::keyPressEvent(QKeyEvent *event)
+//{
+//    //if (currentTool) currentTool->keyPressEvent(event);
+//}
 
 void Paper::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {

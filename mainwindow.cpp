@@ -12,6 +12,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QVector<Paper*> paperVector = PaperModel().getAllPapers();
 
+    if(paperVector.size() == 0)
+    {
+        Paper* tmp = new Paper();
+        tmp->generateId();
+        paperVector.push_back(tmp );
+        PaperModel(tmp->id.toString()).savePaper(tmp);
+    }
+
     QStringList labels;
     for (Paper* storedPaper : paperVector)
     {

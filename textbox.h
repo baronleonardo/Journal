@@ -24,6 +24,7 @@ public:
 	~TextBox();
 	bool amIClicked(QGraphicsSceneMouseEvent *event);
 	void textChanged();
+    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // TEXTBOX_H

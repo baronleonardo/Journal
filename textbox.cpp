@@ -52,8 +52,9 @@ TextBox::TextBox(Paper* paper, QGraphicsItem* textItem)
 	setText();
 
 	int width = 0, height = 0;
-	getTextWidthAndHeight(width, height);
-	m_textEdit->resize(width, height);
+    //getTextWidthAndHeight(width, height);
+    //m_textEdit->resize(width, height);
+    m_textEdit->resize(300, 100);
 
     m_textEdit->setFocus();
 	m_proxyText = m_paper->addWidget(m_textEdit);
@@ -100,5 +101,10 @@ void TextBox::textChanged()
 	QGraphicsSimpleTextItem* selectedSimpleTextItem = dynamic_cast<QGraphicsSimpleTextItem*>(m_textItem);
 
 	if(selectedSimpleTextItem)
-		selectedSimpleTextItem->setText(m_textEdit->document()->toPlainText());
+        selectedSimpleTextItem->setText(m_textEdit->document()->toPlainText());
+}
+
+void TextBox::keyPressEvent(QKeyEvent *event)
+{
+    //m_textEdit->keyPressEvent(event);
 }
