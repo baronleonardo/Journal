@@ -25,11 +25,6 @@ QJsonValue PaperModel::itemToJson(QGraphicsItem* item)
 		data["type"] = "simpletext";
 		data["text"] = simpleTextItem->text();
 	}
-	else if (QGraphicsPathItem* pathItem = pathItem_cast(item))
-	{
-		data["type"] = "stroke";
-		data["path"] = jsonArrayFromPath(pathItem->path());
-	}
 	else return QJsonValue();
 
 	return QJsonValue(data);
@@ -62,12 +57,33 @@ QGraphicsItem* PaperModel::itemFromJson(QJsonObject data, QString mediaFileLocat
 	return result;
 }
 
+QGraphicsItem* PaperModel::savePathAsImageAndReturnPixmapItem(QUuid id, QGraphicsItem* item)
+{
+	QPen defaultPen = QPen(Qt::black, 3.0,
+						   Qt::SolidLine, Qt::RoundCap,
+						   Qt::RoundJoin);
+	QGraphicsPathItem* pathItem = pathItem_cast(item);
+	QRectF pathBoundingRect = pathItem->boundingRect();
+	QPixmap pixmap(pathBoundingRect.width(), pathBoundingRect.height());
+	pixmap.fill(Qt::transparent);
+	QPainter painter(&pixmap);
+	painter.setRenderHint( QPainter::Antialiasing );
+	painter.setPen( defaultPen );
+	painter.drawPath(pathItem->path());
+	painter.end();
+	pixmap.save(appDirectoryLocation + id.toString(), "PNG");
+	return new QGraphicsPixmapItem(pixmap);
+}
+
 void PaperModel::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath = "")
 {
 	QJsonObject::Iterator i = paperJson->find(id.toString());
 
 	if (itemPath.size())
 		itemPath = copyMediaFileToJournal(id, itemPath);
+
+	if (QGraphicsPathItem* pathItem = pathItem_cast(item))
+		item = savePathAsImageAndReturnPixmapItem(id, pathItem);
 
 	QJsonValue itemJson = itemToJson(item);
 

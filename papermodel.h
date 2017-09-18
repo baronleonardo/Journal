@@ -25,6 +25,7 @@ private:
 	void saveToFile(QJsonDocument jsonDocument);
 	QString copyMediaFileToJournal(QUuid id, QString path);
 	QString getAbsolutePath(QString relativePath);
+	QGraphicsItem* savePathAsImageAndReturnPixmapItem(QUuid id, QGraphicsItem* item);
 	QGraphicsPixmapItem* pixmap_cast(QGraphicsItem* item);
 	QGraphicsPathItem* pathItem_cast(QGraphicsItem* item);
 	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem* item);
