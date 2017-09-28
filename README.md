@@ -15,7 +15,7 @@ If you're on Linux use your package manager.
 ### Fedora
 `sudo dnf install qt5-qt*`
 ### Arch
-I don't know! If you have arch send a pull request to let the world know what commands to do!
+sudo pacman -S qt5
 
 ## Setting up the development environment
 I use [Qt Creator](https://www.qt.io/ide/) to develop and I recommend using it.
