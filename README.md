@@ -6,33 +6,35 @@ a note taking application that is heavily inspired by OneNote.
 ![Class Diagram](/uml.png)
 
 ## Dependencies
-This project is based on the wonderful Qt framework.
+### Qt5
+This project is uses the wonderful Qt framework.
 
-If you're on Windows download and install it from the [official Qt download page](https://www.qt.io/download-open-source/).
+Download and install it from the [official Qt download page](https://www.qt.io/download-open-source/).
 
-If you're on Linux use your package manager.
+If you're on Linux you could use your package manager to install Qt like below, though you most probably won't get the latest version.
 
-### Ubuntu
+#### Ubuntu
 
 ```bash
 sudo apt-get install qt5-default qttools5-dev-tools mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev
 ```
 
-### Fedora
+#### Fedora
 
 ```bash
 sudo dnf install qt5-qt*
 ```
 
-### Arch
+#### Arch
 
 ```bash
 sudo pacman -S qt5-base qt5-tools mesa
 ```
 
-Also, you have to build and install the [git-lfs package](https://aur.archlinux.org/packages/git-lfs/) so the file **huge_dictionary.h** becomes available
-for the build process.
-You can use [Yaourt](https://archlinux.fr/yaourt-en) or other [AUR package helpers](https://wiki.archlinux.org/index.php/AUR_helpers) to make this
+### Git LFS
+You'll need to install the [Git LFS package](https://git-lfs.github.com/).
+
+on **Arch** you can install the [git-lfs package](https://aur.archlinux.org/packages/git-lfs/) using [Yaourt](https://archlinux.fr/yaourt-en) or other [AUR package helpers](https://wiki.archlinux.org/index.php/AUR_helpers) to make this
 process easy. In the Yaourt case, you can just
 
 ```bash
@@ -59,23 +61,18 @@ The project uses qmake, so import the project to qtcreator and it should be fine
 
 To proper import, Open QtCreator and in the top menu, go to File > Open File or Project and open the repository `Journal.pro` file.
 
-Go to the Projects tab, and configure the Build settings:
-
-![Qt Creator build configuration](/qt_creator_configuration.png)
-
-Once done, the Run configuration is already set.
+You're good to go!
 
 ### Use the terminal to build and run
 Do the following if you only want to try Journal.
 Make sure you have the dependencies installed and then:
 
-
 ```bash
 cd $JOURNAL_HOME
-mkdir build
-qmake ../Journal
+mkdir build && cd build
+qmake ..
 make
-/.Journal
+./Journal
 ```
 
 Where `$JOURNAL_HOME` is the folder that you cloned the Journal repository into and qmake is the Qt5 compactible qmake tool.
