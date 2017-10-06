@@ -4,6 +4,16 @@
 #include "paper.h"
 #include "tool.h"
 
+struct BoundingRectangle
+{
+	QPointF upperRight;
+	QPointF bottomLeft;
+	BoundingRectangle(QPointF p_upperRight, QPointF p_bottomLeft);
+	int width();
+	int height();
+	void updateRectangle(QPointF point);
+};
+
 class PenTool : public Tool
 {
 
@@ -15,8 +25,9 @@ class PenTool : public Tool
 	int m_width;
 	QPen m_qpen;
 	QColor m_color;
-
+	BoundingRectangle currentStrokeBoundingRectangle;
 	void drawLineTo(const QPointF &endPoint);
+	QPixmap pathToPixmap(const QGraphicsPathItem* pathItem);
 
 public:
 	PenTool(QGraphicsScene* paper);

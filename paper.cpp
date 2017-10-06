@@ -64,6 +64,11 @@ void Paper::emitItemModified(QGraphicsItem *item)
 	emit itemModified(savableItems.find(item).value(), item);
 }
 
+void Paper::emitItemModified(QGraphicsItem *item, QString itemPath)
+{
+	emit itemModified(savableItems.find(item).value(), item, itemPath);
+}
+
 void Paper::emitItemDeleted(QGraphicsItem *item)
 {
 	emit itemDeleted(savableItems.find(item).value(), item);

@@ -12,6 +12,8 @@ class PaperModel : public QObject
 private:
 	const QString appDirectoryName;
 	QString appDirectoryLocation;
+	QString papersDirectoryLocation;
+	QString imagesDirectoryLocation;
 	QJsonObject* paperJson;
 	Paper* paper;
 	QFile* paperFile;
@@ -24,7 +26,7 @@ private:
 	QJsonArray jsonArrayFromPath(QPainterPath path);
 	void saveToFile(QJsonDocument jsonDocument);
 	QString copyMediaFileToJournal(QUuid id, QString path);
-	QString getAbsolutePath(QString relativePath);
+	QString getAssetPath(QString relativePath);
 	QGraphicsPixmapItem* pixmap_cast(QGraphicsItem* item);
 	QGraphicsPathItem* pathItem_cast(QGraphicsItem* item);
 	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem* item);
@@ -33,6 +35,7 @@ private:
 
 public slots:
 	void onItemModified(QUuid id, QGraphicsItem* item, QString itemPath);
+	//void onItemModified(QUuid id, QGraphicsItem *item, bool isAPathImage);
 	void onItemDeleted(QUuid id, QGraphicsItem* item, QString itemPath);
 
 public:

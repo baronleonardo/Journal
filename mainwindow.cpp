@@ -45,6 +45,7 @@ MainWindow::~MainWindow()
 {
 	diskIOThread.quit();
 	diskIOThread.wait();
+
 	delete ui;
     delete currentPaper;
 	delete currentPaperModel;
@@ -112,8 +113,8 @@ void MainWindow::setCurrentPaper(paperAndModelPair p_paper)
     currentPaper = p_paper.first;
     currentPaperModel = p_paper.second;
     ui->graphicsView->setScene(currentPaper);
-    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+	connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified);
+	connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted);
 }
 
 void MainWindow::on_listWidget_itemSelectionChanged()

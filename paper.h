@@ -35,6 +35,7 @@ public:
 	void setPaperID();
 	void addSavableItem(QGraphicsItem* item, QUuid id);
 	void emitItemModified(QGraphicsItem* item);
+	void emitItemModified(QGraphicsItem* item, QString itemPath);
 	void emitItemDeleted(QGraphicsItem* item);
 	void insertIntoSavableItems(QGraphicsItem* item);
 	void graphicsScenePressEvent(QGraphicsSceneMouseEvent *event);
