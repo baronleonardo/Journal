@@ -35,6 +35,7 @@ public:
 
 private:
 
+	QThread workerThread;
 	Ui::MainWindow *ui;
     PaperList *paperList;
     Paper *currentPaper;

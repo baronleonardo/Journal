@@ -5,13 +5,15 @@
 
 #include "paper.h"
 
-class PaperModel : public QThread
+class PaperModel : public QObject
 {
 	Q_OBJECT
 
 private:
 	const QString appDirectoryName;
 	QString appDirectoryLocation;
+	QString papersDirectoryLocation;
+	QString imagesDirectoryLocation;
 	QJsonObject* paperJson;
 	Paper* paper;
 	QFile* paperFile;
@@ -24,8 +26,7 @@ private:
 	QJsonArray jsonArrayFromPath(QPainterPath path);
 	void saveToFile(QJsonDocument jsonDocument);
 	QString copyMediaFileToJournal(QUuid id, QString path);
-	QString getAbsolutePath(QString relativePath);
-	QGraphicsItem* savePathAsImageAndReturnPixmapItem(QUuid id, QGraphicsItem* item);
+	QString getAssetPath(QString relativePath);
 	QGraphicsPixmapItem* pixmap_cast(QGraphicsItem* item);
 	QGraphicsPathItem* pathItem_cast(QGraphicsItem* item);
 	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem* item);
@@ -34,10 +35,8 @@ private:
 
 public slots:
 	void onItemModified(QUuid id, QGraphicsItem* item, QString itemPath);
+	//void onItemModified(QUuid id, QGraphicsItem *item, bool isAPathImage);
 	void onItemDeleted(QUuid id, QGraphicsItem* item, QString itemPath);
-
-protected:
-	void run() override;
 
 signals:
 

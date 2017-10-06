@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	//this->setStyleSheet("background-color: #f8f8f8;");
 	setWindowSize();
 
+	workerThread.start();
+
     QVector<Paper*> paperVector = PaperModel().getAllPapers();
 
     if(paperVector.size() == 0)
@@ -41,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	workerThread.quit();
+	workerThread.wait();
 	delete ui;
     delete currentPaper;
 	delete currentPaperModel;
@@ -97,8 +101,9 @@ void MainWindow::createNewPaper()
     allPapers.push_back(paperAndModelPair(currentPaper, currentPaperModel = new PaperModel(currentPaper->id.toString())));
     ui->listWidget->addItem(currentPaper->name);
     ui->graphicsView->setScene(currentPaper);
-    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+	currentPaperModel->moveToThread(&workerThread);
+	connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified);
+	connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted);
     currentPaperModel->savePaper(currentPaper);
 }
 
@@ -107,8 +112,8 @@ void MainWindow::setCurrentPaper(paperAndModelPair p_paper)
     currentPaper = p_paper.first;
     currentPaperModel = p_paper.second;
     ui->graphicsView->setScene(currentPaper);
-    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+	connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified);
+	connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted);
 }
 
 void MainWindow::on_listWidget_itemSelectionChanged()
