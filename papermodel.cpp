@@ -143,11 +143,6 @@ QGraphicsTextItem* PaperModel::text_cast(QGraphicsItem *item)
 	return dynamic_cast<QGraphicsTextItem*>(item);
 }
 
-void PaperModel::run()
-{
-
-}
-
 void PaperModel::saveToFile(QJsonDocument jsonDocument)
 {
 	paperFile->open(QIODevice::WriteOnly);
@@ -205,7 +200,7 @@ PaperModel::PaperModel(QString path) : PaperModel()
 	paper = loadPaper(path);
 }
 
-PaperModel::PaperModel() : QThread(), appDirectoryName("/journal/")
+PaperModel::PaperModel() : appDirectoryName("/journal/")
 {
     paperFile = nullptr;
     QString configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);

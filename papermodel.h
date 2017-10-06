@@ -5,7 +5,7 @@
 
 #include "paper.h"
 
-class PaperModel : public QThread
+class PaperModel : public QObject
 {
 	Q_OBJECT
 
@@ -34,11 +34,6 @@ private:
 public slots:
 	void onItemModified(QUuid id, QGraphicsItem* item, QString itemPath);
 	void onItemDeleted(QUuid id, QGraphicsItem* item, QString itemPath);
-
-protected:
-	void run() override;
-
-signals:
 
 public:
     PaperModel();

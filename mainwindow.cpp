@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	//this->setStyleSheet("background-color: #f8f8f8;");
 	setWindowSize();
 
+	diskIOThread.start();
+
     QVector<Paper*> paperVector = PaperModel().getAllPapers();
 
     if(paperVector.size() == 0)
@@ -41,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	diskIOThread.quit();
+	diskIOThread.wait();
 	delete ui;
     delete currentPaper;
 	delete currentPaperModel;
@@ -97,8 +101,9 @@ void MainWindow::createNewPaper()
     allPapers.push_back(paperAndModelPair(currentPaper, currentPaperModel = new PaperModel(currentPaper->id.toString())));
     ui->listWidget->addItem(currentPaper->name);
     ui->graphicsView->setScene(currentPaper);
-    connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified, Qt::QueuedConnection);
-    connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted, Qt::QueuedConnection);
+	currentPaperModel->moveToThread(&diskIOThread);
+	connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified);
+	connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted);
     currentPaperModel->savePaper(currentPaper);
 }
 
