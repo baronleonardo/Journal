@@ -122,7 +122,7 @@ void MainWindow::on_listWidget_itemSelectionChanged()
     setCurrentPaper(allPapers[ ui->listWidget->currentIndex().row()]);
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_newPaperButton_clicked()
 {
     createNewPaper();
 }
