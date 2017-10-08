@@ -29,6 +29,8 @@ private slots:
 
     void on_listWidget_itemSelectionChanged();
 
+	void on_newPaperButton_clicked();
+
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();

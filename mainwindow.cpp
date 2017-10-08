@@ -119,9 +119,10 @@ void MainWindow::setCurrentPaper(paperAndModelPair p_paper)
 
 void MainWindow::on_listWidget_itemSelectionChanged()
 {
-    if (ui->listWidget->currentIndex().row() == 0)
-        createNewPaper();
-    else
-        setCurrentPaper( // -1 because the first item is to add a new paper
-                    allPapers[ ui->listWidget->currentIndex().row() - 1 ] );
+    setCurrentPaper(allPapers[ ui->listWidget->currentIndex().row()]);
+}
+
+void MainWindow::on_newPaperButton_clicked()
+{
+    createNewPaper();
 }
