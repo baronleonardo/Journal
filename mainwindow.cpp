@@ -83,8 +83,7 @@ QRectF MainWindow::getScreenSize()
 
 void MainWindow::setWindowSize()
 {
-	QRectF screenSize = getScreenSize();
-	resize(screenSize.width(), screenSize.height());
+    this->setWindowState(Qt::WindowMaximized);
 }
 
 void MainWindow::uncheckAllExcept(QAction* action)
