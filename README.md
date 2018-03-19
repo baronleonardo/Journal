@@ -6,30 +6,17 @@ a note taking application that is heavily inspired by OneNote.
 ![Class Diagram](/uml.png)
 
 ## Dependencies
+
+We need:
+* Qt >= 5.10.1
+* git lfs
+
 ### Qt5
-This project is uses the wonderful Qt framework.
+**We need version 5.10.1 or newer. Older versions of Qt have bugs that makes this application unusable.**
 
-Download and install it from the [official Qt download page](https://www.qt.io/download-open-source/).
+Download and install it from the [official Qt download page](https://www.qt.io/download-open-source/). They have the latest version and the latest bug fixes.
 
-If you're on Linux you could use your package manager to install Qt like below, though you most probably won't get the latest version.
-
-#### Ubuntu
-
-```bash
-sudo apt-get install qt5-default qttools5-dev-tools mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev
-```
-
-#### Fedora
-
-```bash
-sudo dnf install qt5-qt*
-```
-
-#### Arch
-
-```bash
-sudo pacman -S qt5-base qt5-tools mesa
-```
+If you use linux, I do not recommend using the distro repository version of Qt as it does not tend to have the latest version of Qt. I am guessing there are exceptions for some of the bleeding-edge frequently-updated distros out there, but I haven't tried that myself so I wouldn't recommend it.
 
 ### Git LFS
 You'll need to install the [Git LFS package](https://git-lfs.github.com/).
