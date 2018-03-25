@@ -3,8 +3,8 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-						QMainWindow(parent),
-						ui(new Ui::MainWindow)
+	QMainWindow(parent),
+	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 	//this->setStyleSheet("background-color: #f8f8f8;");
@@ -12,31 +12,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	diskIOThread.start();
 
-    QVector<Paper*> paperVector = PaperModel().getAllPapers();
+	QStringList paperIDs = Paper::getAllPaperIDs();
 
-    if(paperVector.size() == 0)
-    {
-        Paper* tmp = new Paper();
-        tmp->generateId();
-        paperVector.push_back(tmp );
-        PaperModel(tmp->id.toString()).savePaper(tmp);
-    }
+	if(paperIDs.size() == 0)
+		allPapers.push_back( new PaperController(this) );
 
-    QStringList labels;
-    for (Paper* storedPaper : paperVector)
-    {
-        labels.push_back(storedPaper->name);
-        allPapers.push_back(paperAndModelPair(storedPaper, new PaperModel(storedPaper->id.toString())));
-    }
+	QStringList labels;
+	for(QString paperID : paperIDs)
+	{
+		PaperController* newPaper = new PaperController(paperID, this);
+		newPaper->paper->moveToThread(&diskIOThread);
+		allPapers.push_back( newPaper );
+		labels.push_back( newPaper->name() );
+	}
 
-    setCurrentPaper(allPapers[0]);
+	setCurrentPaper(allPapers[0]);
 
-    SelectTool* selectTool = new SelectTool(currentPaper);
-    currentPaper->setTool(selectTool);
+	SelectTool* selectTool = new SelectTool(currentPaper->paperView);
+	currentPaper->setTool(selectTool);
 
 	ui->actionSelect->setChecked(true);
 	ui->graphicsView->setSceneRect(getScreenSize());
-    ui->listWidget->addItems(labels);
+	ui->listWidget->addItems(labels);
 
 	setWindowTitle(tr("Journal"));
 }
@@ -47,32 +44,30 @@ MainWindow::~MainWindow()
 	diskIOThread.wait();
 
 	delete ui;
-    delete currentPaper;
-	delete currentPaperModel;
 }
 
 void MainWindow::on_actionDraw_triggered()
 {
 	uncheckAllExcept(ui->actionDraw);
 
-    PenTool* penTool = new PenTool(currentPaper);
-    currentPaper->setTool(penTool);
+	PenTool* penTool = new PenTool(currentPaper->paperView);
+	currentPaper->setTool(penTool);
 }
 
 void MainWindow::on_actionText_triggered()
 {	
 	uncheckAllExcept(ui->actionText);
 
-    TextTool* textTool = new TextTool(currentPaper);
-    currentPaper->setTool(textTool);
+	TextTool* textTool = new TextTool(currentPaper->paperView);
+	currentPaper->setTool(textTool);
 }
 
 void MainWindow::on_actionSelect_triggered()
 {
 	uncheckAllExcept(ui->actionSelect);
 
-    SelectTool* selectTool = new SelectTool(currentPaper);
-    currentPaper->setTool(selectTool);
+	SelectTool* selectTool = new SelectTool(currentPaper->paperView);
+	currentPaper->setTool(selectTool);
 }
 
 QRectF MainWindow::getScreenSize()
@@ -83,7 +78,7 @@ QRectF MainWindow::getScreenSize()
 
 void MainWindow::setWindowSize()
 {
-    this->setWindowState(Qt::WindowMaximized);
+	this->setWindowState(Qt::WindowMaximized);
 }
 
 void MainWindow::uncheckAllExcept(QAction* action)
@@ -91,37 +86,30 @@ void MainWindow::uncheckAllExcept(QAction* action)
 	foreach (QAction* a, ui->mainToolBar->actions())
 		a->setChecked(false);
 
-    action->setChecked(true);
+	action->setChecked(true);
 }
 
 void MainWindow::createNewPaper()
 {
-    currentPaper = new Paper();
-    currentPaper->generateId();
-    allPapers.push_back(paperAndModelPair(currentPaper, currentPaperModel = new PaperModel(currentPaper->id.toString())));
-    ui->listWidget->addItem(currentPaper->name);
-    ui->graphicsView->setScene(currentPaper);
-	currentPaperModel->moveToThread(&diskIOThread);
-	connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified);
-	connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted);
-    currentPaperModel->savePaper(currentPaper);
+	currentPaper = new PaperController(this);
+	allPapers.push_back(currentPaper);
+	ui->listWidget->addItem(currentPaper->name());
+	ui->graphicsView->setScene((QGraphicsScene*)currentPaper->paperView);
+	currentPaper->paper->moveToThread(&diskIOThread);
 }
 
-void MainWindow::setCurrentPaper(paperAndModelPair p_paper)
+void MainWindow::setCurrentPaper(PaperController* p_paper)
 {
-    currentPaper = p_paper.first;
-    currentPaperModel = p_paper.second;
-    ui->graphicsView->setScene(currentPaper);
-	connect(currentPaper, &Paper::itemModified, currentPaperModel, &PaperModel::onItemModified);
-	connect(currentPaper, &Paper::itemDeleted, currentPaperModel, &PaperModel::onItemDeleted);
+	currentPaper = p_paper;
+	ui->graphicsView->setScene((QGraphicsScene*)currentPaper->paperView);
 }
 
 void MainWindow::on_listWidget_itemSelectionChanged()
 {
-    setCurrentPaper(allPapers[ ui->listWidget->currentIndex().row()]);
+	setCurrentPaper(allPapers[ ui->listWidget->currentIndex().row() ]);
 }
 
 void MainWindow::on_newPaperButton_clicked()
 {
-    createNewPaper();
+	createNewPaper();
 }

@@ -1,7 +1,7 @@
 #ifndef PENTOOL_H
 #define PENTOOL_H
 
-#include "paper.h"
+#include "papercontroller.h"
 #include "tool.h"
 
 struct BoundingRectangle
@@ -16,9 +16,6 @@ struct BoundingRectangle
 
 class PenTool : public Tool
 {
-
-	Paper* m_paper;
-
 	bool inTheMiddleOfAStroke;
 	QPainterPath* currentStrokePath;
 	QGraphicsPathItem* currentStrokeItem;
@@ -30,7 +27,7 @@ class PenTool : public Tool
 	QPixmap pathToPixmap(const QGraphicsPathItem* pathItem);
 
 public:
-	PenTool(QGraphicsScene* paper);
+	PenTool(PaperView* paper);
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;

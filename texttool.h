@@ -1,13 +1,11 @@
 #ifndef TEXTTOOL_H
 #define TEXTTOOL_H
 
-#include "paper.h"
 #include "tool.h"
 #include "textbox.h"
 
 class TextTool : public Tool
 {
-	Paper* m_paper;
 	QGraphicsItem* selectedItem;
 	TextBox* m_textBox;
 
@@ -15,7 +13,7 @@ class TextTool : public Tool
 
 
 public:
-	TextTool(Paper* paper);
+	TextTool(PaperView* paper);
 	~TextTool();
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;

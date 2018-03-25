@@ -39,7 +39,7 @@ TextBox::TextBox() : QObject()
 	m_textEdit = nullptr;
 }
 
-TextBox::TextBox(Paper* paper, QGraphicsItem* textItem)
+TextBox::TextBox(PaperView* paper, QGraphicsItem* textItem)
 {
 	m_paper = paper;
 	m_textItem = textItem;

@@ -1,6 +1,7 @@
 #include "texttool.h"
+#include "paperview.h"
 
-TextTool::TextTool(Paper* paper)
+TextTool::TextTool(PaperView* paper)
 {
 	m_paper = paper;
 	selectedItem = nullptr;
@@ -20,7 +21,6 @@ void TextTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	handleMousePressWhileEditingText(event);
 	//selectedItem = addText("");
 	selectedItem = m_paper->addSimpleText("");
-	m_paper->insertIntoSavableItems(selectedItem);
 	selectedItem->setPos(event->scenePos());
 	selectedItem->setFlag(QGraphicsItem::ItemIsMovable);
 	m_textBox = new TextBox(m_paper, selectedItem);

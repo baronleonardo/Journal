@@ -14,8 +14,6 @@ namespace Ui {
 class MainWindow;
 }
 
-typedef std::pair<Paper*, PaperModel*> paperAndModelPair;
-
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -40,14 +38,13 @@ private:
 	QThread diskIOThread;
 	Ui::MainWindow *ui;
     PaperList *paperList;
-    Paper *currentPaper;
-    PaperModel *currentPaperModel;
-    QVector<paperAndModelPair> allPapers;
+	PaperController *currentPaper;
+	QVector<PaperController*> allPapers;
 	QRectF getScreenSize();
 	void setWindowSize();
 	void uncheckAllExcept(QAction* action);
     void createNewPaper();
-    void setCurrentPaper(paperAndModelPair p_paper);
+	void setCurrentPaper(PaperController* p_paper);
 };
 
 #endif // MAINWINDOW_H

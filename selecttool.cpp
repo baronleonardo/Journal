@@ -1,4 +1,5 @@
 #include "selecttool.h"
+#include "paperview.h"
 
 bool SelectTool::isAStroke(QGraphicsItem *item)
 {
@@ -6,7 +7,7 @@ bool SelectTool::isAStroke(QGraphicsItem *item)
 	return (tmp == nullptr) ? false : true;
 }
 
-SelectTool::SelectTool(Paper* paper)
+SelectTool::SelectTool(PaperView* paper)
 {
 	m_paper = paper;
     selectedItem = nullptr;

@@ -2,51 +2,53 @@
 #define PAPERMODEL_H
 
 #include <QObject>
+#include <QJsonObject>
 
-#include "paper.h"
+#include "papercontroller.h"
 
-class PaperModel : public QObject
+class Paper : public QObject
 {
 	Q_OBJECT
 
 private:
-	const QString appDirectoryName;
-	QString appDirectoryLocation;
-	QString papersDirectoryLocation;
-	QString imagesDirectoryLocation;
-	QJsonObject* paperJson;
-	Paper* paper;
-	QFile* paperFile;
+	static const QString appDirectoryName;
+	static QString configLocation;
+	static QString appDirectoryLocation;
+	static QString papersDirectoryLocation;
+	static QString imagesDirectoryLocation;
+
+	QJsonObject paperJson;
 
 	QJsonValue itemToJson(QGraphicsItem* item);
 	QGraphicsItem* itemFromJson(QJsonObject data, QString mediaFileLocation);
-	QPainterPath getPathFromJson(QJsonValue json);
-	QPainterPath getPathFromPoints(QList<QVariant> points);
-	QList<QPointF> getPointsInPath(QPainterPath path);
-	QJsonArray jsonArrayFromPath(QPainterPath path);
-	void saveToFile(QJsonDocument jsonDocument);
+
 	QString copyMediaFileToJournal(QUuid id, QString path);
+
 	QString getAssetPath(QString relativePath);
+
 	QGraphicsPixmapItem* pixmap_cast(QGraphicsItem* item);
-	QGraphicsPathItem* pathItem_cast(QGraphicsItem* item);
 	QGraphicsSimpleTextItem* simpleText_cast(QGraphicsItem* item);
-    QGraphicsPathItem* pathItem_static_cast(QGraphicsItem *item);
 	QGraphicsTextItem* text_cast(QGraphicsItem* item);
+
+	void setPaperID(QString id);
+	void setPaperID(QUuid p_id);
 
 public slots:
 	void onItemModified(QUuid id, QGraphicsItem* item, QString itemPath);
-	//void onItemModified(QUuid id, QGraphicsItem *item, bool isAPathImage);
 	void onItemDeleted(QUuid id, QGraphicsItem* item, QString itemPath);
 
 public:
-    PaperModel();
-	PaperModel(QString path);
-	~PaperModel();
+	Paper(QObject* parent);
+	Paper(QObject* parent, QString paperID);
+	~Paper();
 
-    QVector<Paper*> getAllPapers();
-	Paper* loadPaper(QString path);
-	void savePaper(Paper* paper);
-	Paper *getPaper() const;
+	QUuid id;
+	QString name;
+	QHash<QGraphicsItem*, QUuid> graphicsItems;
+
+	static QStringList getAllPaperIDs();
+	QVector<QGraphicsItem*> getVectorOfGraphicsItems();
+	void save();
 };
 
 #endif // PAPERMODEL_H

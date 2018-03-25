@@ -1,7 +1,7 @@
 #ifndef TEXTBOX_H
 #define TEXTBOX_H
 
-#include "paper.h"
+#include "paperview.h"
 
 class TextBox : public QObject
 {
@@ -16,11 +16,11 @@ class TextBox : public QObject
 	void getTextWidthAndHeight(int &width, int &height);
 
 public:
-	Paper* m_paper;
+	PaperView* m_paper;
 	QGraphicsItem* m_textItem;
 
 	TextBox();
-	TextBox(Paper *, QGraphicsItem *);
+	TextBox(PaperView *, QGraphicsItem *);
 	~TextBox();
 	bool amIClicked(QGraphicsSceneMouseEvent *event);
 	void textChanged();

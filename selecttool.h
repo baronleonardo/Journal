@@ -1,13 +1,12 @@
 #ifndef SELECTTOOL_H
 #define SELECTTOOL_H
 
-#include "paper.h"
+#include "papercontroller.h"
 #include "tool.h"
 #include "textbox.h"
 
 class SelectTool : public Tool
 {
-	Paper* m_paper;
 	QGraphicsItem* selectedItem;
 	TextBox* m_textBox;
 	QGraphicsItem* m_dragged;
@@ -16,7 +15,7 @@ class SelectTool : public Tool
 	bool isAStroke(QGraphicsItem* item);
 
 public:
-	SelectTool(Paper* paper);
+	SelectTool(PaperView* paper);
 	~SelectTool();
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;

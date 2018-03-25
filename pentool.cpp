@@ -1,8 +1,9 @@
 #include "pentool.h"
+#include "paperview.h"
 
-PenTool::PenTool(QGraphicsScene* paper) : currentStrokeBoundingRectangle(QPoint(), QPoint())
+PenTool::PenTool(PaperView* paper) : currentStrokeBoundingRectangle(QPoint(), QPoint())
 {
-	m_paper = dynamic_cast<Paper*>(paper);
+	m_paper = paper;
 	inTheMiddleOfAStroke = false;
 	currentStrokePath = nullptr;
 	currentStrokeItem = nullptr;
@@ -20,7 +21,7 @@ void PenTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	currentStrokeItem->setPen(m_qpen);
 	currentStrokeItem->setFlag(QGraphicsItem::ItemIsMovable);
 	inTheMiddleOfAStroke = true;
-	m_paper->insertIntoSavableItems(currentStrokeItem);
+	m_paper->addItem(currentStrokeItem);
 	currentStrokeBoundingRectangle = BoundingRectangle(event->scenePos(), event->scenePos());
 }
 
@@ -45,7 +46,6 @@ void PenTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		QPixmap pixmap = pathToPixmap(currentStrokeItem);
 		m_paper->deleteItem(currentStrokeItem);
 		QGraphicsPixmapItem* pixmapItem = m_paper->addPixmap(pixmap);
-		m_paper->insertIntoSavableItems(pixmapItem);
 		m_paper->emitItemModified(pixmapItem);
 	}
 }

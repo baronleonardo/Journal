@@ -6,6 +6,8 @@
 #include <QtWidgets>
 #include <QObject>
 
+class PaperView;
+
 class Tool : public QObject
 {
 	Q_OBJECT
@@ -14,6 +16,7 @@ protected:
 
 public:
 	explicit Tool();
+	PaperView* m_paper;
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) = 0;

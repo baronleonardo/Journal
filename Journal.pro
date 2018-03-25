@@ -13,17 +13,17 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    paper.cpp \
     papermodel.cpp \
     tool.cpp \
     pentool.cpp \
     selecttool.cpp \
     texttool.cpp \
     textbox.cpp \
-    paperlist.cpp
+    paperlist.cpp \
+    paperview.cpp \
+    papercontroller.cpp
 
 HEADERS  += mainwindow.h \
-    paper.h \
     papermodel.h \
     tool.h \
     pentool.h \
@@ -31,7 +31,9 @@ HEADERS  += mainwindow.h \
     texttool.h \
     textbox.h \
     paperlist.h \
-    huge_dictionary.h
+    huge_dictionary.h \
+    papercontroller.h \
+    paperview.h
 
 FORMS    += mainwindow.ui
 
