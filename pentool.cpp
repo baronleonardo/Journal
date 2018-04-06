@@ -1,9 +1,9 @@
 #include "pentool.h"
 #include "paperview.h"
 
-PenTool::PenTool(PaperView* paper) : currentStrokeBoundingRectangle(QPoint(), QPoint())
+PenTool::PenTool() : currentStrokeBoundingRectangle(QPoint(), QPoint())
 {
-	m_paper = paper;
+	m_paper = nullptr;
 	inTheMiddleOfAStroke = false;
 	currentStrokePath = nullptr;
 	currentStrokeItem = nullptr;
@@ -53,6 +53,14 @@ void PenTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void PenTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
 	m_paper->graphicsSceneDoubleClickEvent(event);
+}
+
+void PenTool::deselect()
+{
+	m_paper = nullptr;
+	inTheMiddleOfAStroke = false;
+	currentStrokePath = nullptr;
+	currentStrokeItem = nullptr;
 }
 
 void PenTool::drawLineTo(const QPointF &endPoint)

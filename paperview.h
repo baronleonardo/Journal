@@ -41,10 +41,10 @@ private:
 	void onTextDropEvent(QGraphicsSceneDragDropEvent *event);
 	void initializeAndAddItemToScene(QGraphicsItem* item, QPointF position);
 
-	PaperController* controller;
-	std::unique_ptr<Tool> currentTool;
-	QPointF lastPoint;
 	const QSize mCellSize;
+	PaperController* controller;
+	Tool* currentTool;
+	QPointF lastPoint;
 };
 
 #endif // PAPERVIEW_H

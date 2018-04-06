@@ -1,21 +1,14 @@
 #ifndef PAPERCONTROLLER_H
 #define PAPERCONTROLLER_H
 
-#include <QColor>
-#include <QImage>
-#include <QPoint>
 #include <QWidget>
-#include <QPainter>
-#include <vector>
-#include <QGraphicsView>
-#include <QTextEdit>
 #include <memory>
 #include <QtWidgets>
 #include <math.h>
+#include "papermodel.h"
 
 #define CELL_SIZE 15
 
-class Paper;
 class PaperView;
 class Tool;
 
@@ -25,7 +18,7 @@ class PaperController : public QObject
 
 public:
 	PaperView* paperView;
-	Paper* paper;
+	std::unique_ptr<Paper> paper;
 
 	PaperController(QString paperName, QWidget *parent = nullptr);
 	PaperController(QWidget *parent = nullptr);

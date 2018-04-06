@@ -1,5 +1,11 @@
 #include "papermodel.h"
 
+#include <QStandardPaths>
+#include <QTextDocument>
+#include <QFile>
+#include <QDir>
+#include <QJsonDocument>
+
 const QString Paper::appDirectoryName = "journal/";
 QString Paper::configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + '/';
 QString Paper::appDirectoryLocation = configLocation + appDirectoryName;
@@ -125,7 +131,7 @@ QGraphicsTextItem* Paper::text_cast(QGraphicsItem *item)
 	return dynamic_cast<QGraphicsTextItem*>(item);
 }
 
-Paper::Paper(QObject* parent, QString paperID) : Paper(parent)
+Paper::Paper(QString paperID) : Paper()
 {
 	QFile paperFile(papersDirectoryLocation + paperID);
 	paperFile.open(QIODevice::ReadOnly);
@@ -149,7 +155,7 @@ Paper::Paper(QObject* parent, QString paperID) : Paper(parent)
 	name = paperJson.value("name").toString();
 }
 
-Paper::Paper(QObject* parent) : QObject(parent)
+Paper::Paper() : QObject(nullptr)
 {
 	QDir dir;
 	if (!dir.exists(appDirectoryLocation))		dir.mkdir(appDirectoryLocation);

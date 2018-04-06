@@ -7,20 +7,20 @@
 class TextTool : public Tool
 {
 	QGraphicsItem* selectedItem;
-	TextBox* m_textBox;
+	std::unique_ptr<TextBox> m_textBox;
 
 	void handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event);
 
 
 public:
-	TextTool(PaperView* paper);
+	TextTool();
 	~TextTool();
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
-    //void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+	void deselect() Q_DECL_OVERRIDE;
 
 };
 

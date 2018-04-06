@@ -1,16 +1,15 @@
 #include "texttool.h"
 #include "paperview.h"
 
-TextTool::TextTool(PaperView* paper)
+TextTool::TextTool()
 {
-	m_paper = paper;
+	m_paper = nullptr;
 	selectedItem = nullptr;
 	m_textBox = nullptr;
 }
 
 TextTool::~TextTool()
 {
-	if (m_textBox) delete m_textBox;
 }
 
 void TextTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -19,11 +18,10 @@ void TextTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 		return;
 
 	handleMousePressWhileEditingText(event);
-	//selectedItem = addText("");
 	selectedItem = m_paper->addSimpleText("");
 	selectedItem->setPos(event->scenePos());
 	selectedItem->setFlag(QGraphicsItem::ItemIsMovable);
-	m_textBox = new TextBox(m_paper, selectedItem);
+	m_textBox = std::unique_ptr<TextBox>( new TextBox(m_paper, selectedItem) );
 }
 
 void TextTool::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -41,6 +39,16 @@ void TextTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 	m_paper->graphicsSceneDoubleClickEvent(event);
 }
 
+void TextTool::deselect()
+{
+	if(selectedItem)
+		m_paper->emitItemModified(selectedItem);
+
+	m_paper = nullptr;
+	selectedItem = nullptr;
+	m_textBox = nullptr;
+}
+
 void TextTool::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 {
 	if (! m_textBox)
@@ -49,8 +57,10 @@ void TextTool::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 	if (m_textBox && m_textBox->amIClicked(event))
 		return;
 
-	if(m_textBox)
-		delete m_textBox;
+	if(selectedItem)
+		m_paper->emitItemModified(selectedItem);
+
+	m_textBox = nullptr;
 }
 
 //void TextTool::keyPressEvent(QKeyEvent *event)

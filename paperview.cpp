@@ -3,17 +3,24 @@
 
 PaperView::PaperView(PaperController* parent) : QGraphicsScene(parent),  mCellSize(15, 15), controller(parent)
 {
+	currentTool = nullptr;
 }
 
 PaperView::PaperView(PaperController* parent, QVector<QGraphicsItem*> items) : QGraphicsScene(parent),  mCellSize(15, 15), controller(parent)
 {
+	currentTool = nullptr;
+
 	for(int i = 0; i < items.size(); i++)
 		addItem(items[i]);
 }
 
 void PaperView::setTool(Tool* tool)
 {
-	currentTool = std::unique_ptr<Tool>(tool);
+	if(currentTool)
+		currentTool->deselect();
+
+	currentTool = tool;
+	currentTool->setPaper(this);
 }
 
 void PaperView::deleteItem(QGraphicsItem* item)

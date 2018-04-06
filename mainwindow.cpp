@@ -7,17 +7,20 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	//this->setStyleSheet("background-color: #f8f8f8;");
 	setWindowSize();
 
 	diskIOThread.start();
 
 	QStringList paperIDs = Paper::getAllPaperIDs();
+	QStringList labels;
 
 	if(paperIDs.size() == 0)
+	{
 		allPapers.push_back( new PaperController(this) );
+		labels.push_back( allPapers[0]->name() );
+	}
 
-	QStringList labels;
+
 	for(QString paperID : paperIDs)
 	{
 		PaperController* newPaper = new PaperController(paperID, this);
@@ -26,10 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
 		labels.push_back( newPaper->name() );
 	}
 
-	setCurrentPaper(allPapers[0]);
 
-	SelectTool* selectTool = new SelectTool(currentPaper->paperView);
-	currentPaper->setTool(selectTool);
+	currentTool = &selectTool;
+	setCurrentPaper(allPapers[0]);
 
 	ui->actionSelect->setChecked(true);
 	ui->graphicsView->setSceneRect(getScreenSize());
@@ -49,25 +51,22 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionDraw_triggered()
 {
 	uncheckAllExcept(ui->actionDraw);
-
-	PenTool* penTool = new PenTool(currentPaper->paperView);
-	currentPaper->setTool(penTool);
+	currentPaper->setTool(&penTool);
+	currentTool = &penTool;
 }
 
 void MainWindow::on_actionText_triggered()
 {	
 	uncheckAllExcept(ui->actionText);
-
-	TextTool* textTool = new TextTool(currentPaper->paperView);
-	currentPaper->setTool(textTool);
+	currentPaper->setTool(&textTool);
+	currentTool = &textTool;
 }
 
 void MainWindow::on_actionSelect_triggered()
 {
 	uncheckAllExcept(ui->actionSelect);
-
-	SelectTool* selectTool = new SelectTool(currentPaper->paperView);
-	currentPaper->setTool(selectTool);
+	currentPaper->setTool(&selectTool);
+	currentTool = &selectTool;
 }
 
 QRectF MainWindow::getScreenSize()
@@ -93,6 +92,7 @@ void MainWindow::createNewPaper()
 {
 	currentPaper = new PaperController(this);
 	allPapers.push_back(currentPaper);
+	currentPaper->setTool(currentTool);
 	ui->listWidget->addItem(currentPaper->name());
 	ui->graphicsView->setScene((QGraphicsScene*)currentPaper->paperView);
 	currentPaper->paper->moveToThread(&diskIOThread);
@@ -101,6 +101,7 @@ void MainWindow::createNewPaper()
 void MainWindow::setCurrentPaper(PaperController* p_paper)
 {
 	currentPaper = p_paper;
+	currentPaper->setTool(currentTool);
 	ui->graphicsView->setScene((QGraphicsScene*)currentPaper->paperView);
 }
 

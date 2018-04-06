@@ -8,26 +8,25 @@
 
 #include "tool.h"
 #include "paperview.h"
-#include "papermodel.h"
 
 PaperController::PaperController(QString paperName, QWidget *parent) : QObject(parent)
 {
-	paper = new Paper(this, paperName);
+	paper = std::unique_ptr<Paper>( new Paper(paperName) );
 	paperView = new PaperView(this, paper->getVectorOfGraphicsItems());
 
-	connect(this, &PaperController::itemModified, paper, &Paper::onItemModified);
-	connect(this, &PaperController::itemDeleted, paper, &Paper::onItemDeleted);
+	connect(this, &PaperController::itemModified, paper.get(), &Paper::onItemModified);
+	connect(this, &PaperController::itemDeleted, paper.get(), &Paper::onItemDeleted);
 }
 
 PaperController::PaperController(QWidget* parent) : QObject(parent)
 {
-	paper = new Paper(this);
+	paper = std::unique_ptr<Paper>( new Paper() );
 	paper->name = generateRandomName();
 
 	paperView = new PaperView(this);
 
-	connect(this, &PaperController::itemModified, paper, &Paper::onItemModified);
-	connect(this, &PaperController::itemDeleted, paper, &Paper::onItemDeleted);
+	connect(this, &PaperController::itemModified, paper.get(), &Paper::onItemModified);
+	connect(this, &PaperController::itemDeleted, paper.get(), &Paper::onItemDeleted);
 }
 
 void PaperController::setTool(Tool* p_tool)

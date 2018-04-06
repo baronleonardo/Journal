@@ -17,12 +17,13 @@ protected:
 public:
 	explicit Tool();
 	PaperView* m_paper;
+	void setPaper(PaperView* paper) { m_paper = paper; }
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) = 0;
-    //virtual void keyPressEvent(QKeyEvent *event) {}
+	virtual void deselect() = 0;
 
 signals:
 

@@ -7,9 +7,9 @@ bool SelectTool::isAStroke(QGraphicsItem *item)
 	return (tmp == nullptr) ? false : true;
 }
 
-SelectTool::SelectTool(PaperView* paper)
+SelectTool::SelectTool()
 {
-	m_paper = paper;
+	m_paper = nullptr;
     selectedItem = nullptr;
 	m_textBox = nullptr;
 	m_dragged = nullptr;
@@ -17,7 +17,6 @@ SelectTool::SelectTool(PaperView* paper)
 
 SelectTool::~SelectTool()
 {
-	if (m_textBox) delete m_textBox;
 }
 
 void SelectTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -25,18 +24,18 @@ void SelectTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	if (event->button() != Qt::LeftButton)
 		return;
 
+	if(m_textBox && !m_textBox->amIClicked(event))
+	{
+		m_paper->emitItemModified(m_textBox->m_textItem);
+		m_textBox = nullptr;
+		return;
+	}
+
 	selectedItem = m_paper->itemAt(event->scenePos(), QTransform());
 	m_dragged = selectedItem;
 
 	if (m_dragged)
 		m_dragOffset = event->scenePos() - m_dragged->pos();
-
-	if(m_textBox && !m_textBox->amIClicked(event))
-	{
-		delete m_textBox;
-		m_textBox = nullptr;
-		return;
-	}
 
 	m_paper->graphicsScenePressEvent(event);
 }
@@ -71,7 +70,7 @@ void SelectTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
 	if (m_textBox && !m_textBox->amIClicked(event))
 	{
-		delete m_textBox;
+		m_paper->emitItemModified(selectedItem);
 		m_textBox = nullptr;
 	}
 
@@ -80,7 +79,7 @@ void SelectTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 	if(selectedTextItem)
 	{
-		m_textBox = new TextBox(m_paper, selectedItem);
+		m_textBox = std::unique_ptr<TextBox>( new TextBox(m_paper, selectedItem) );
 		return;
 	}
 
@@ -88,11 +87,22 @@ void SelectTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 	if(selectedSimpleTextItem)
 	{
-		m_textBox = new TextBox(m_paper, selectedItem);
+		m_textBox = std::unique_ptr<TextBox>( new TextBox(m_paper, selectedItem) );
 		return;
 	}
+}
 
-	//m_paper->graphicsSceneDoubleClickEvent(event);
+void SelectTool::deselect()
+{
+	if(m_textBox)
+	{
+		m_paper->emitItemModified(selectedItem);
+	}
+
+	m_paper = nullptr;
+	selectedItem = nullptr;
+	m_textBox = nullptr;
+	m_dragged = nullptr;
 }
 
 void SelectTool::keyPressEvent(QKeyEvent *event)

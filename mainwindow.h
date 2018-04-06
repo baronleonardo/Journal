@@ -36,6 +36,10 @@ public:
 private:
 
 	QThread diskIOThread;
+	Tool* currentTool;
+	SelectTool selectTool;
+	PenTool penTool;
+	TextTool textTool;
 	Ui::MainWindow *ui;
     PaperList *paperList;
 	PaperController *currentPaper;

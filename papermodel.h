@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <QJsonObject>
-
-#include "papercontroller.h"
+#include <QGraphicsItem>
+#include <QUuid>
 
 class Paper : public QObject
 {
@@ -38,8 +38,8 @@ public slots:
 	void onItemDeleted(QUuid id, QGraphicsItem* item, QString itemPath);
 
 public:
-	Paper(QObject* parent);
-	Paper(QObject* parent, QString paperID);
+	Paper();
+	Paper(QString paperID);
 	~Paper();
 
 	QUuid id;
