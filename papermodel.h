@@ -11,6 +11,9 @@ class Paper : public QObject
 	Q_OBJECT
 
 private:
+	QUuid id;
+	QString name;
+
 	static const QString appDirectoryName;
 	static QString configLocation;
 	static QString appDirectoryLocation;
@@ -42,8 +45,9 @@ public:
 	Paper(QString paperID);
 	~Paper();
 
-	QUuid id;
-	QString name;
+	QString getName() const;
+	void setName(QString name);
+
 	QHash<QGraphicsItem*, QUuid> graphicsItems;
 
 	static QStringList getAllPaperIDs();

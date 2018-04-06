@@ -21,7 +21,7 @@ PaperController::PaperController(QString paperName, QWidget *parent) : QObject(p
 PaperController::PaperController(QWidget* parent) : QObject(parent)
 {
 	paper = std::unique_ptr<Paper>( new Paper() );
-	paper->name = generateRandomName();
+	paper->setName(generateRandomName());
 
 	paperView = new PaperView(this);
 
@@ -54,9 +54,9 @@ void PaperController::deleteItem(QGraphicsItem *item)
 	emitItemDeleted(item);
 }
 
-QString PaperController::name()
+QString PaperController::name() const
 {
-	return paper->name;
+	return paper->getName();
 }
 
 QString PaperController::generateRandomName()

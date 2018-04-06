@@ -168,6 +168,17 @@ Paper::~Paper()
 {
 }
 
+QString Paper::getName() const
+{
+	return this->name;
+}
+
+void Paper::setName(QString name)
+{
+	this->name = name;
+	paperJson["name"] = name;
+}
+
 QStringList Paper::getAllPaperIDs()
 {
 	QDir dir(papersDirectoryLocation);

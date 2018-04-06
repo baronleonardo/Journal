@@ -8,36 +8,35 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 	setWindowSize();
+	setWindowTitle(tr("Notix Journal"));
 
 	diskIOThread.start();
+	currentTool = &selectTool;
 
 	QStringList paperIDs = Paper::getAllPaperIDs();
 	QStringList labels;
 
 	if(paperIDs.size() == 0)
 	{
-		allPapers.push_back( new PaperController(this) );
-		labels.push_back( allPapers[0]->name() );
+		createNewPaper();
 	}
-
-
-	for(QString paperID : paperIDs)
+	else
 	{
-		PaperController* newPaper = new PaperController(paperID, this);
-		newPaper->paper->moveToThread(&diskIOThread);
-		allPapers.push_back( newPaper );
-		labels.push_back( newPaper->name() );
+		for(QString paperID : paperIDs)
+		{
+			PaperController* newPaper = new PaperController(paperID, this);
+			newPaper->paper->moveToThread(&diskIOThread);
+			allPapers.push_back( newPaper );
+			labels.push_back( newPaper->name() );
+		}
+
+		ui->listWidget->addItems(labels);
+		setCurrentPaper(allPapers[0]);
 	}
-
-
-	currentTool = &selectTool;
-	setCurrentPaper(allPapers[0]);
 
 	ui->actionSelect->setChecked(true);
 	ui->graphicsView->setSceneRect(getScreenSize());
-	ui->listWidget->addItems(labels);
 
-	setWindowTitle(tr("Journal"));
 }
 
 MainWindow::~MainWindow()

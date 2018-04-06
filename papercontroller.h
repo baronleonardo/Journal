@@ -31,7 +31,7 @@ public:
 	void insertIntoSavableItems(QGraphicsItem* item);
 	void deleteItem(QGraphicsItem* item);
     void generateId();
-	QString name();
+	QString name() const;
 
 signals:
 	void itemModified(QUuid itemID, QGraphicsItem* item, QString itemPath = "");
