@@ -1,4 +1,5 @@
-[![Stories in Ready](https://badge.waffle.io/lordadamson/Journal.png?label=ready&title=Ready)](https://waffle.io/lordadamson/Journal)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/NotixApp/Journal.svg?columns=all)](https://waffle.io/NotixApp/Journal)
+
 # Journal
 a note taking application that is heavily inspired by OneNote.
 
