@@ -89,6 +89,7 @@ void PaperView::initializeAndAddItemToScene(QGraphicsItem *item, QPointF positio
 	item->setPos(x, y);
 
 	addItem(item);
+	graphicsItems[item] = QUuid::createUuid().toString();
 	controller->emitItemModified(item);
 }
 
