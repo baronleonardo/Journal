@@ -49,10 +49,8 @@ public:
 	QString getName() const;
 	void setName(QString name);
 
-	QHash<QGraphicsItem*, QUuid> graphicsItems;
-
 	static QStringList getAllPaperIDs();
-	QVector<QGraphicsItem*> getVectorOfGraphicsItems();
+	QHash<QGraphicsItem*, QString> getMapOfGraphicsItems();
 	void save();
 };
 

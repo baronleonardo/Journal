@@ -6,12 +6,18 @@ PaperView::PaperView(PaperController* parent) : QGraphicsScene(parent),  mCellSi
 	currentTool = nullptr;
 }
 
-PaperView::PaperView(PaperController* parent, QVector<QGraphicsItem*> items) : QGraphicsScene(parent),  mCellSize(15, 15), controller(parent)
+PaperView::PaperView(PaperController* parent, QHash<QGraphicsItem*, QString> items) : QGraphicsScene(parent),  mCellSize(15, 15), controller(parent)
 {
 	currentTool = nullptr;
 
-	for(int i = 0; i < items.size(); i++)
-		addItem(items[i]);
+	graphicsItems = items;
+
+	QHashIterator<QGraphicsItem*, QString> i(graphicsItems);
+	while (i.hasNext())
+	{
+		i.next();
+		addItem(i.key());
+	}
 }
 
 void PaperView::setTool(Tool* tool)
@@ -25,8 +31,13 @@ void PaperView::setTool(Tool* tool)
 
 void PaperView::deleteItem(QGraphicsItem* item)
 {
+	deleteItemFromCanvas(item);
+	graphicsItems.remove(item);
+}
+
+void PaperView::deleteItemFromCanvas(QGraphicsItem* item)
+{
 	removeItem(item);
-	controller->deleteItem(item);
 }
 
 void PaperView::emitItemModified(QGraphicsItem* item)

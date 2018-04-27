@@ -11,10 +11,13 @@ class PaperView : public QGraphicsScene
 {
 public:
 	PaperView(PaperController* controller);
-	PaperView(PaperController *controller, QVector<QGraphicsItem*> items);
+	PaperView(PaperController *controller, QHash<QGraphicsItem*, QString> items);
+
+	QHash<QGraphicsItem*, QString> graphicsItems;
 
 	void setTool(Tool* tool);
 	void deleteItem(QGraphicsItem* item);
+	void deleteItemFromCanvas(QGraphicsItem* item);
 
 	void emitItemModified(QGraphicsItem* item);
 	void emitItemModified(QGraphicsItem* item, QString itemPath);

@@ -45,7 +45,9 @@ void PenTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		currentStrokePath = nullptr;
 		QPixmap pixmap = pathToPixmap(currentStrokeItem);
 		m_paper->deleteItem(currentStrokeItem);
+		currentStrokeItem = nullptr;
 		QGraphicsPixmapItem* pixmapItem = m_paper->addPixmap(pixmap);
+		m_paper->graphicsItems[pixmapItem] = QUuid::createUuid().toString();
 		m_paper->emitItemModified(pixmapItem);
 	}
 }

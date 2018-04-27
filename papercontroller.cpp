@@ -12,7 +12,7 @@
 PaperController::PaperController(QString paperName, QWidget *parent) : QObject(parent)
 {
 	paper = std::unique_ptr<Paper>( new Paper(paperName) );
-	paperView = new PaperView(this, paper->getVectorOfGraphicsItems());
+	paperView = new PaperView(this, paper->getMapOfGraphicsItems());
 
 	connect(this, &PaperController::itemModified, paper.get(), &Paper::onItemModified);
 	connect(this, &PaperController::itemDeleted, paper.get(), &Paper::onItemDeleted);
@@ -36,17 +36,19 @@ void PaperController::setTool(Tool* p_tool)
 
 void PaperController::emitItemModified(QGraphicsItem *item)
 {
-	emit itemModified(paper->graphicsItems.find(item).value(), item);
+	QString id = paperView->graphicsItems.find(item).value();
+
+	emit itemModified(id, item);
 }
 
 void PaperController::emitItemModified(QGraphicsItem *item, QString itemPath)
 {
-	emit itemModified(paper->graphicsItems.find(item).value(), item, itemPath);
+	emit itemModified(paperView->graphicsItems.find(item).value(), item, itemPath);
 }
 
 void PaperController::emitItemDeleted(QGraphicsItem *item)
 {
-	emit itemDeleted(paper->graphicsItems.find(item).value(), item);
+	emit itemDeleted(paperView->graphicsItems.find(item).value(), item);
 }
 
 void PaperController::deleteItem(QGraphicsItem *item)

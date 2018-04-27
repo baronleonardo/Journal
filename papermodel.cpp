@@ -139,16 +139,6 @@ Paper::Paper(QString paperID) : Paper()
 	QJsonDocument jsonDocument(QJsonDocument::fromJson(byteArray));
 	paperJson = QJsonObject(jsonDocument.object());
 
-	QJsonObject::Iterator i;
-
-	for(i = paperJson.begin(); i != paperJson.end(); i++)
-	{
-		QString itemPath = getAssetPath(i.key());
-		QGraphicsItem* item = itemFromJson(i.value().toObject(), itemPath);
-		if(item)
-			graphicsItems.insert(item, QUuid(i.key()));
-	}
-
 	setPaperID(paperID);
 	name = paperJson.value("name").toString();
 }
@@ -183,18 +173,20 @@ QStringList Paper::getAllPaperIDs()
 	return dir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries);
 }
 
-QVector<QGraphicsItem*> Paper::getVectorOfGraphicsItems()
+QHash<QGraphicsItem*, QString> Paper::getMapOfGraphicsItems()
 {
-	QVector<QGraphicsItem*> items;
+	QHash<QGraphicsItem*, QString> graphicsItems;
+	QJsonObject::Iterator i;
 
-	QHashIterator<QGraphicsItem*, QUuid> i(graphicsItems);
-	while (i.hasNext())
+	for(i = paperJson.begin(); i != paperJson.end(); i++)
 	{
-		i.next();
-		items.push_back(i.key());
+		QString itemPath = getAssetPath(i.key());
+		QGraphicsItem* item = itemFromJson(i.value().toObject(), itemPath);
+		if(item)
+			graphicsItems.insert(item, i.key());
 	}
 
-	return items;
+	return graphicsItems;
 }
 
 void Paper::setPaperID(QString p_id)
