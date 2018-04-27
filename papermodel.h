@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QGraphicsItem>
 #include <QUuid>
+#include <QMutex>
 
 class Paper : public QObject
 {

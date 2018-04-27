@@ -58,10 +58,10 @@ QGraphicsItem* Paper::itemFromJson(QJsonObject data, QString mediaFileLocation =
 
 void Paper::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath = "")
 {
-	QJsonObject::Iterator i = paperJson.find(id.toString());
-
 	if (itemPath.size())
+	{
 		itemPath = copyMediaFileToJournal(id, itemPath);
+	}
 	else if (QGraphicsPixmapItem* pixmapItem = pixmap_cast(item))
 	{
 		pixmapItem->pixmap().save(imagesDirectoryLocation + id.toString(), "PNG");
@@ -69,10 +69,8 @@ void Paper::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath = "")
 
 	QJsonValue itemJson = itemToJson(item);
 
-	if(i == paperJson.end())
-		paperJson.insert(id.toString(), itemJson);
-	else
-		i.value() = itemJson;
+	paperJson[id.toString()] = itemJson;
+
 	save();
 }
 
