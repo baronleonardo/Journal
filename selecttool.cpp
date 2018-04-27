@@ -110,6 +110,7 @@ void SelectTool::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Delete)
 		if (selectedItem)
 		{
+			m_paper->emitItemDeleted(m_paper->getItemId(selectedItem));
 			m_paper->deleteItem(selectedItem);
 			selectedItem = nullptr;
         }

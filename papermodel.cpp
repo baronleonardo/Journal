@@ -56,7 +56,7 @@ QGraphicsItem* Paper::itemFromJson(QJsonObject data, QString mediaFileLocation =
 	return result;
 }
 
-void Paper::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath = "")
+void Paper::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath)
 {
 	if (itemPath.size())
 	{
@@ -74,7 +74,7 @@ void Paper::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath = "")
 	save();
 }
 
-void Paper::onItemDeleted(QUuid id, QGraphicsItem *item, QString itemPath)
+void Paper::onItemDeleted(QUuid id)
 {
 	QJsonObject::Iterator i = paperJson.find(id.toString());
 

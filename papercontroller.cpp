@@ -56,19 +56,9 @@ void PaperController::emitItemModified(QGraphicsItem *item, QString itemPath)
 	emit itemModified(paperView->graphicsItems.find(item).value(), item, itemPath);
 }
 
-void PaperController::emitItemDeleted(QGraphicsItem *item)
+void PaperController::emitItemDeleted(QString itemId)
 {
-	if (!paperView->itemExists(item))
-	{
-		return;
-	}
-
-	emit itemDeleted(paperView->graphicsItems.find(item).value(), item);
-}
-
-void PaperController::deleteItem(QGraphicsItem *item)
-{
-	emitItemDeleted(item);
+	emit itemDeleted(itemId);
 }
 
 QString PaperController::name() const

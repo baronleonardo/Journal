@@ -30,6 +30,14 @@ bool PaperView::itemExists(QGraphicsItem* item)
 	return true;
 }
 
+QString PaperView::getItemId(QGraphicsItem* item)
+{
+	if(!itemExists(item))
+		return "";
+
+	return graphicsItems[item];
+}
+
 void PaperView::setTool(Tool* tool)
 {
 	if(currentTool)
@@ -60,9 +68,9 @@ void PaperView::emitItemModified(QGraphicsItem* item, QString itemPath)
 	controller->emitItemModified(item, itemPath);
 }
 
-void PaperView::emitItemDeleted(QGraphicsItem* item)
+void PaperView::emitItemDeleted(QString itemId)
 {
-	controller->emitItemDeleted(item);
+	controller->emitItemDeleted(itemId);
 }
 
 // Draws a grid in the background.
@@ -87,6 +95,12 @@ void PaperView::roundToNearestCell(int &x, int &y, QPointF pos)
 {
 	x = round(pos.x() / mCellSize.width()) * mCellSize.width();
 	y = round(pos.y() / mCellSize.height()) * mCellSize.height();
+}
+
+void PaperView::keyPressEvent(QKeyEvent* event)
+{
+	if (currentTool) currentTool->keyPressEvent(event);
+	QGraphicsScene::keyPressEvent(event);
 }
 
 void PaperView::initializeAndAddItemToScene(QGraphicsItem *item, QPointF position)
@@ -143,7 +157,7 @@ void PaperView::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 	if (currentTool) currentTool->mouseDoubleClickEvent(event);
 }
 
-void PaperView::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
+void PaperView::dragMoveEvent(QGraphicsSceneDragDropEvent *)
 {
 
 }

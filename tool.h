@@ -19,6 +19,7 @@ public:
 	PaperView* m_paper;
 	void setPaper(PaperView* paper) { m_paper = paper; }
 
+	virtual void keyPressEvent(QKeyEvent *event) = 0;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) = 0;
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) = 0;

@@ -18,13 +18,12 @@ public:
 	SelectTool();
 	~SelectTool();
 
+	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void deselect() Q_DECL_OVERRIDE;
-
-    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // SELECTTOOL_H

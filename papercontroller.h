@@ -27,15 +27,15 @@ public:
 	void addSavableItem(QGraphicsItem* item, QUuid id);
 	void emitItemModified(QGraphicsItem* item);
 	void emitItemModified(QGraphicsItem* item, QString itemPath);
-	void emitItemDeleted(QGraphicsItem* item);
+	void emitItemDeleted(QString itemId);
 	void insertIntoSavableItems(QGraphicsItem* item);
 	void deleteItem(QGraphicsItem* item);
     void generateId();
 	QString name() const;
 
 signals:
-	void itemModified(QUuid itemID, QGraphicsItem* item, QString itemPath = "");
-	void itemDeleted(QUuid itemID, QGraphicsItem* item, QString itemPath = "");
+	void itemModified(QString itemID, QGraphicsItem* item, QString itemPath = "");
+	void itemDeleted(QString itemID);
 
 public slots:
 

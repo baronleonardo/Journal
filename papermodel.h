@@ -38,8 +38,8 @@ private:
 	void setPaperID(QUuid p_id);
 
 public slots:
-	void onItemModified(QUuid id, QGraphicsItem* item, QString itemPath);
-	void onItemDeleted(QUuid id, QGraphicsItem* item, QString itemPath);
+	void onItemModified(QUuid id, QGraphicsItem* item, QString itemPath = "");
+	void onItemDeleted(QUuid id);
 
 public:
 	Paper();

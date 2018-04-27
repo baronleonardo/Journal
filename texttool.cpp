@@ -12,6 +12,11 @@ TextTool::~TextTool()
 {
 }
 
+void TextTool::keyPressEvent(QKeyEvent*)
+{
+
+}
+
 void TextTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	if(event->button() != Qt::LeftButton)
@@ -24,7 +29,7 @@ void TextTool::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	m_textBox = std::unique_ptr<TextBox>( new TextBox(m_paper, selectedItem) );
 }
 
-void TextTool::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void TextTool::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
 
 }
@@ -62,8 +67,3 @@ void TextTool::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 
 	m_textBox = nullptr;
 }
-
-//void TextTool::keyPressEvent(QKeyEvent *event)
-//{
-//    m_textBox->keyPressEvent(event);
-//}

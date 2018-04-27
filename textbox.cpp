@@ -51,7 +51,7 @@ TextBox::TextBox(PaperView* paper, QGraphicsItem* textItem)
 	m_textEdit->setCursorWidth(3);
 	setText();
 
-	int width = 0, height = 0;
+	//int width = 0, height = 0;
     //getTextWidthAndHeight(width, height);
     //m_textEdit->resize(width, height);
     m_textEdit->resize(300, 100);
@@ -104,7 +104,7 @@ void TextBox::textChanged()
         selectedSimpleTextItem->setText(m_textEdit->document()->toPlainText());
 }
 
-void TextBox::keyPressEvent(QKeyEvent *event)
+void TextBox::keyPressEvent(QKeyEvent *)
 {
     //m_textEdit->keyPressEvent(event);
 }

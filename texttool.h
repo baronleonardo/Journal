@@ -16,6 +16,7 @@ public:
 	TextTool();
 	~TextTool();
 
+	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;

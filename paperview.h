@@ -16,13 +16,15 @@ public:
 	QHash<QGraphicsItem*, QString> graphicsItems;
 	bool itemExists(QGraphicsItem* item);
 
+	QString getItemId(QGraphicsItem* item);
+
 	void setTool(Tool* tool);
 	void deleteItem(QGraphicsItem* item);
 	void deleteItemFromCanvas(QGraphicsItem* item);
 
 	void emitItemModified(QGraphicsItem* item);
 	void emitItemModified(QGraphicsItem* item, QString itemPath);
-	void emitItemDeleted(QGraphicsItem* item);
+	void emitItemDeleted(QString itemId);
 
 	void graphicsSceneDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 	void graphicsScenePressEvent(QGraphicsSceneMouseEvent *event);
@@ -31,6 +33,7 @@ public:
 	void roundToNearestCell(int &x, int &y, QPointF pos);
 
 protected:
+	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
