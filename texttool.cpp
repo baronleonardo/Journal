@@ -12,9 +12,9 @@ TextTool::~TextTool()
 {
 }
 
-void TextTool::keyPressEvent(QKeyEvent*)
+void TextTool::keyPressEvent(QKeyEvent* event)
 {
-
+	if(m_textBox) m_textBox->keyPressEvent(event);
 }
 
 void TextTool::mousePressEvent(QGraphicsSceneMouseEvent *event)

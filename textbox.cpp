@@ -51,10 +51,13 @@ TextBox::TextBox(PaperView* paper, QGraphicsItem* textItem)
 	m_textEdit->setCursorWidth(3);
 	setText();
 
-	//int width = 0, height = 0;
-    //getTextWidthAndHeight(width, height);
-    //m_textEdit->resize(width, height);
-    m_textEdit->resize(300, 100);
+	int width = 0, height = 0;
+	getTextWidthAndHeight(width, height);
+
+	if (width < 300) width = 175;
+	if (height < 100) height = 75;
+
+	m_textEdit->resize(width * 1.5, height * 1.5);
 
     m_textEdit->setFocus();
 	m_proxyText = m_paper->addWidget(m_textEdit);
@@ -106,5 +109,11 @@ void TextBox::textChanged()
 
 void TextBox::keyPressEvent(QKeyEvent *)
 {
-    //m_textEdit->keyPressEvent(event);
+	int width = 0, height = 0;
+	getTextWidthAndHeight(width, height);
+
+	if (width < 300) width = 300;
+	if (height < 100) height = 100;
+
+	m_textEdit->resize(width + 50, height + 50);
 }
