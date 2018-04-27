@@ -14,6 +14,7 @@ public:
 	PaperView(PaperController *controller, QHash<QGraphicsItem*, QString> items);
 
 	QHash<QGraphicsItem*, QString> graphicsItems;
+	bool itemExists(QGraphicsItem* item);
 
 	void setTool(Tool* tool);
 	void deleteItem(QGraphicsItem* item);

@@ -4,7 +4,7 @@
 a note taking application that is heavily inspired by OneNote.
 
 # How it Looks Like
-![Screenshot](/journal_screenshot.jpg)
+![Screenshot](/journal_screenshot.png)
 
 # Class Diagram
 ![Class Diagram](/uml.png)

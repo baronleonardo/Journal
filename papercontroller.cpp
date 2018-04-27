@@ -35,7 +35,12 @@ void PaperController::setTool(Tool* p_tool)
 }
 
 void PaperController::emitItemModified(QGraphicsItem *item)
-{
+{	
+	if (!paperView->itemExists(item))
+	{
+		return;
+	}
+
 	QString id = paperView->graphicsItems.find(item).value();
 
 	emit itemModified(id, item);
@@ -43,11 +48,21 @@ void PaperController::emitItemModified(QGraphicsItem *item)
 
 void PaperController::emitItemModified(QGraphicsItem *item, QString itemPath)
 {
+	if (!paperView->itemExists(item))
+	{
+		return;
+	}
+
 	emit itemModified(paperView->graphicsItems.find(item).value(), item, itemPath);
 }
 
 void PaperController::emitItemDeleted(QGraphicsItem *item)
 {
+	if (!paperView->itemExists(item))
+	{
+		return;
+	}
+
 	emit itemDeleted(paperView->graphicsItems.find(item).value(), item);
 }
 

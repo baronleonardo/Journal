@@ -20,6 +20,16 @@ PaperView::PaperView(PaperController* parent, QHash<QGraphicsItem*, QString> ite
 	}
 }
 
+bool PaperView::itemExists(QGraphicsItem* item)
+{
+	if (graphicsItems.find(item) == graphicsItems.end())
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void PaperView::setTool(Tool* tool)
 {
 	if(currentTool)
