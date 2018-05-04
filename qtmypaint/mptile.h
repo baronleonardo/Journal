@@ -32,7 +32,7 @@ public:
     MPTile (QGraphicsItem * parent = NULL);
     ~MPTile();
 
-    enum { k_tile_dim = 64 };
+	enum { k_tile_dim = 64 };
     enum { k_red = 0, k_green = 1, k_blue = 2, k_alpha =3 }; // Index to access RGBA values in myPaint
 
     QImage image();

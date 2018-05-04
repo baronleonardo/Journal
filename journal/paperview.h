@@ -21,11 +21,13 @@ public:
 	bool itemExists(QGraphicsItem* item);
 
 	QString getItemId(QGraphicsItem* item);
+	MPHandler *mypaint;
 
 	void setTool(Tool* tool);
 	void deleteItem(QGraphicsItem* item);
 	void deleteItemFromCanvas(QGraphicsItem* item);
 
+	void onNewItemAdded(QGraphicsItem* item);
 	void emitItemModified(QGraphicsItem* item);
 	void emitItemModified(QGraphicsItem* item, QString itemPath);
 	void emitItemDeleted(QString itemId);
@@ -52,11 +54,11 @@ private:
 	void onTextDropEvent(QGraphicsSceneDragDropEvent *event);
 	void initializeAndAddItemToScene(QGraphicsItem* item, QPointF position);
 
+	QVector<QGraphicsItem*> strokeItems;
 	const QSize mCellSize;
 	PaperController* controller;
 	Tool* currentTool;
 	QPointF lastPoint;
-	MPHandler *mypaint;
 
 public slots:
 	void onNewTile(MPSurface *surface, MPTile *tile);

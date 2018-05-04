@@ -5,8 +5,6 @@ PaperView::PaperView(PaperController* parent) : QGraphicsScene(parent),  mCellSi
 {
 	currentTool = nullptr;
 	mypaint = MPHandler::handler();
-	QSize surfaceSize(width(), height());
-	mypaint->setSurfaceSize(surfaceSize);
 
 	connect(mypaint, &MPHandler::newTile, this, &PaperView::onNewTile);
 	connect(mypaint, &MPHandler::updateTile, this, &PaperView::onUpdateTile);
@@ -69,6 +67,14 @@ void PaperView::deleteItem(QGraphicsItem* item)
 void PaperView::deleteItemFromCanvas(QGraphicsItem* item)
 {
 	removeItem(item);
+}
+
+void PaperView::onNewItemAdded(QGraphicsItem* item)
+{
+	QSize surfaceSize(width(), height());
+	mypaint->setSurfaceSize(surfaceSize);
+
+	emitItemModified(item);
 }
 
 void PaperView::emitItemModified(QGraphicsItem* item)
@@ -154,7 +160,7 @@ void PaperView::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	MPHandler::handler()->startStroke();
 
-	if (currentTool) currentTool->mousePressEvent(event);
+	//if (currentTool) currentTool->mousePressEvent(event);
 }
 
 void PaperView::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -168,6 +174,25 @@ void PaperView::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void PaperView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	MPHandler::handler()->endStroke();
+
+	QImage stroke = MPHandler::handler()->renderImage();
+	QPixmap strokePix;
+	strokePix.convertFromImage(stroke);
+	QGraphicsPixmapItem* item = new QGraphicsPixmapItem(strokePix);
+
+	for(int i = 0; i < strokeItems.size(); i++)
+	{
+		deleteItem(strokeItems[i]);
+	}
+
+	strokeItems.clear();
+	MPHandler::handler()->clearSurface();
+
+	graphicsItems[item] = QUuid::createUuid().toString();
+
+	addItem(item);
+	emitItemModified(item);
+
 	if (currentTool) currentTool->mouseReleaseEvent(event);
 }
 
@@ -220,6 +245,7 @@ void PaperView::onTextDropEvent(QGraphicsSceneDragDropEvent *event)
 void PaperView::onNewTile(MPSurface *surface, MPTile *tile)
 {
 	Q_UNUSED(surface);
+	strokeItems.push_back(tile);
 	addItem(tile);
 }
 

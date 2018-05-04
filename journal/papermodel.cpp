@@ -6,13 +6,13 @@
 #include <QDir>
 #include <QJsonDocument>
 
-const QString Paper::appDirectoryName = "journal/";
-QString Paper::configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + '/';
-QString Paper::appDirectoryLocation = configLocation + appDirectoryName;
-QString Paper::papersDirectoryLocation = appDirectoryLocation + "papers/";
-QString Paper::imagesDirectoryLocation = appDirectoryLocation + "images/";
+const QString PaperModel::appDirectoryName = "journal/";
+QString PaperModel::configLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + '/';
+QString PaperModel::appDirectoryLocation = configLocation + appDirectoryName;
+QString PaperModel::papersDirectoryLocation = appDirectoryLocation + "papers/";
+QString PaperModel::imagesDirectoryLocation = appDirectoryLocation + "images/";
 
-QJsonValue Paper::itemToJson(QGraphicsItem* item)
+QJsonValue PaperModel::itemToJson(QGraphicsItem* item)
 {
 	QJsonObject data;
 
@@ -37,7 +37,7 @@ QJsonValue Paper::itemToJson(QGraphicsItem* item)
 	return QJsonValue(data);
 }
 
-QGraphicsItem* Paper::itemFromJson(QJsonObject data, QString mediaFileLocation = "")
+QGraphicsItem* PaperModel::itemFromJson(QJsonObject data, QString mediaFileLocation = "")
 {
 	QGraphicsItem* result;
 
@@ -56,7 +56,7 @@ QGraphicsItem* Paper::itemFromJson(QJsonObject data, QString mediaFileLocation =
 	return result;
 }
 
-void Paper::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath)
+void PaperModel::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath)
 {
 	if (itemPath.size())
 	{
@@ -74,7 +74,7 @@ void Paper::onItemModified(QUuid id, QGraphicsItem *item, QString itemPath)
 	save();
 }
 
-void Paper::onItemDeleted(QUuid id)
+void PaperModel::onItemDeleted(QUuid id)
 {
 	QJsonObject::Iterator i = paperJson.find(id.toString());
 
@@ -93,7 +93,7 @@ void Paper::onItemDeleted(QUuid id)
 	save();
 }
 
-QString Paper::copyMediaFileToJournal(QUuid id, QString path)
+QString PaperModel::copyMediaFileToJournal(QUuid id, QString path)
 {
 	QFile mediaFile(path);
 	if (!mediaFile.exists())
@@ -106,7 +106,7 @@ QString Paper::copyMediaFileToJournal(QUuid id, QString path)
 }
 
 // gets absolute path to assets within the journal directory, returns an empty string if it does not exist.
-QString Paper::getAssetPath(QString relativePath)
+QString PaperModel::getAssetPath(QString relativePath)
 {
 	QFile file(imagesDirectoryLocation + relativePath);
 	if (file.exists())
@@ -114,22 +114,22 @@ QString Paper::getAssetPath(QString relativePath)
 	return "";
 }
 
-QGraphicsPixmapItem* Paper::pixmap_cast(QGraphicsItem *item)
+QGraphicsPixmapItem* PaperModel::pixmap_cast(QGraphicsItem *item)
 {
 	return dynamic_cast<QGraphicsPixmapItem*>(item);
 }
 
-QGraphicsSimpleTextItem* Paper::simpleText_cast(QGraphicsItem *item)
+QGraphicsSimpleTextItem* PaperModel::simpleText_cast(QGraphicsItem *item)
 {
 	return dynamic_cast<QGraphicsSimpleTextItem*>(item);
 }
 
-QGraphicsTextItem* Paper::text_cast(QGraphicsItem *item)
+QGraphicsTextItem* PaperModel::text_cast(QGraphicsItem *item)
 {
 	return dynamic_cast<QGraphicsTextItem*>(item);
 }
 
-Paper::Paper(QString paperID) : Paper()
+PaperModel::PaperModel(QString paperID) : PaperModel()
 {
 	QFile paperFile(papersDirectoryLocation + paperID);
 	paperFile.open(QIODevice::ReadOnly);
@@ -143,7 +143,7 @@ Paper::Paper(QString paperID) : Paper()
 	name = paperJson.value("name").toString();
 }
 
-Paper::Paper() : QObject(nullptr)
+PaperModel::PaperModel() : QObject(nullptr)
 {
 	QDir dir;
 	if (!dir.exists(appDirectoryLocation))		dir.mkdir(appDirectoryLocation);
@@ -152,28 +152,28 @@ Paper::Paper() : QObject(nullptr)
 	id = QUuid::createUuid();
 }
 
-Paper::~Paper()
+PaperModel::~PaperModel()
 {
 }
 
-QString Paper::getName() const
+QString PaperModel::getName() const
 {
 	return this->name;
 }
 
-void Paper::setName(QString name)
+void PaperModel::setName(QString name)
 {
 	this->name = name;
 	paperJson["name"] = name;
 }
 
-QStringList Paper::getAllPaperIDs()
+QStringList PaperModel::getAllPaperIDs()
 {
 	QDir dir(papersDirectoryLocation);
 	return dir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries);
 }
 
-QHash<QGraphicsItem*, QString> Paper::getMapOfGraphicsItems()
+QHash<QGraphicsItem*, QString> PaperModel::getMapOfGraphicsItems()
 {
 	QHash<QGraphicsItem*, QString> graphicsItems;
 	QJsonObject::Iterator i;
@@ -189,18 +189,18 @@ QHash<QGraphicsItem*, QString> Paper::getMapOfGraphicsItems()
 	return graphicsItems;
 }
 
-void Paper::setPaperID(QString p_id)
+void PaperModel::setPaperID(QString p_id)
 {
 	QUuid id(p_id);
 	setPaperID(id);
 }
 
-void Paper::setPaperID(QUuid p_id)
+void PaperModel::setPaperID(QUuid p_id)
 {
 	id = p_id;
 }
 
-void Paper::save()
+void PaperModel::save()
 {
 	QJsonDocument jsonDocument(paperJson);
 	QFile paperFile(papersDirectoryLocation + id.toString());

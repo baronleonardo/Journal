@@ -47,7 +47,7 @@ void TextTool::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 void TextTool::deselect()
 {
 	if(selectedItem)
-		m_paper->emitItemModified(selectedItem);
+		m_paper->onNewItemAdded(selectedItem);
 
 	m_paper = nullptr;
 	selectedItem = nullptr;
@@ -63,7 +63,7 @@ void TextTool::handleMousePressWhileEditingText(QGraphicsSceneMouseEvent *event)
 		return;
 
 	if(selectedItem)
-		m_paper->emitItemModified(selectedItem);
+		m_paper->onNewItemAdded(selectedItem);
 
 	m_textBox = nullptr;
 }

@@ -7,7 +7,7 @@
 #include <QUuid>
 #include <QMutex>
 
-class Paper : public QObject
+class PaperModel : public QObject
 {
 	Q_OBJECT
 
@@ -42,9 +42,9 @@ public slots:
 	void onItemDeleted(QUuid id);
 
 public:
-	Paper();
-	Paper(QString paperID);
-	~Paper();
+	PaperModel();
+	PaperModel(QString paperID);
+	~PaperModel();
 
 	QString getName() const;
 	void setName(QString name);

@@ -18,7 +18,7 @@ class PaperController : public QObject
 
 public:
 	PaperView* paperView;
-	std::unique_ptr<Paper> paper;
+	std::unique_ptr<PaperModel> paper;
 
 	PaperController(QString paperName, QWidget *parent = nullptr);
 	PaperController(QWidget *parent = nullptr);

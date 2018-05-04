@@ -322,5 +322,9 @@
         <file>brushes/FX_blender_prev.png</file>
         <file>brushes/label-brush-mypaint.sh</file>
         <file>brushes/prev-template.xcf.gz</file>
+        <file>assets/blue.png</file>
+        <file>assets/green.png</file>
+        <file>assets/red.png</file>
+        <file>assets/black.png</file>
     </qresource>
 </RCC>

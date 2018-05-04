@@ -11,22 +11,22 @@
 
 PaperController::PaperController(QString paperName, QWidget *parent) : QObject(parent)
 {
-	paper = std::unique_ptr<Paper>( new Paper(paperName) );
+	paper = std::unique_ptr<PaperModel>( new PaperModel(paperName) );
 	paperView = new PaperView(this, paper->getMapOfGraphicsItems());
 
-	connect(this, &PaperController::itemModified, paper.get(), &Paper::onItemModified);
-	connect(this, &PaperController::itemDeleted, paper.get(), &Paper::onItemDeleted);
+	connect(this, &PaperController::itemModified, paper.get(), &PaperModel::onItemModified);
+	connect(this, &PaperController::itemDeleted, paper.get(), &PaperModel::onItemDeleted);
 }
 
 PaperController::PaperController(QWidget* parent) : QObject(parent)
 {
-	paper = std::unique_ptr<Paper>( new Paper() );
+	paper = std::unique_ptr<PaperModel>( new PaperModel() );
 	paper->setName(generateRandomName());
 
 	paperView = new PaperView(this);
 
-	connect(this, &PaperController::itemModified, paper.get(), &Paper::onItemModified);
-	connect(this, &PaperController::itemDeleted, paper.get(), &Paper::onItemDeleted);
+	connect(this, &PaperController::itemModified, paper.get(), &PaperModel::onItemModified);
+	connect(this, &PaperController::itemDeleted, paper.get(), &PaperModel::onItemDeleted);
 }
 
 void PaperController::setTool(Tool* p_tool)

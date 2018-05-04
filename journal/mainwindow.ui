@@ -64,6 +64,20 @@
    <addaction name="actionSelect"/>
    <addaction name="actionDraw"/>
    <addaction name="actionText"/>
+   <addaction name="separator"/>
+   <addaction name="actionBlack"/>
+   <addaction name="actionBlue"/>
+   <addaction name="actionGreen"/>
+   <addaction name="actionRed"/>
+   <addaction name="separator"/>
+   <addaction name="actionballpen"/>
+   <addaction name="actionAcrylic"/>
+   <addaction name="actionPencil"/>
+   <addaction name="actioncalligraphy"/>
+   <addaction name="actionsewing"/>
+   <addaction name="actionwaterColor"/>
+   <addaction name="separator"/>
+   <addaction name="actionEraser"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionDraw">
@@ -115,6 +129,105 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S, Esc</string>
+   </property>
+  </action>
+  <action name="actionBlack">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/assets/black.png</normaloff>:/assets/black.png</iconset>
+   </property>
+   <property name="text">
+    <string>Black</string>
+   </property>
+  </action>
+  <action name="actionBlue">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/assets/blue.png</normaloff>:/assets/blue.png</iconset>
+   </property>
+   <property name="text">
+    <string>Blue</string>
+   </property>
+  </action>
+  <action name="actionGreen">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/assets/green.png</normaloff>:/assets/green.png</iconset>
+   </property>
+   <property name="text">
+    <string>Green</string>
+   </property>
+  </action>
+  <action name="actionRed">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/assets/red.png</normaloff>:/assets/red.png</iconset>
+   </property>
+   <property name="text">
+    <string>Red</string>
+   </property>
+  </action>
+  <action name="actionballpen">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/brushes/deevad/ballpen_prev.png</normaloff>:/brushes/deevad/ballpen_prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>ballpen</string>
+   </property>
+  </action>
+  <action name="actionAcrylic">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/brushes/tanda/acrylic-05-with-water_prev.png</normaloff>:/brushes/tanda/acrylic-05-with-water_prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>Acrylic</string>
+   </property>
+  </action>
+  <action name="actionPencil">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/brushes/deevad/2B_pencil_prev.png</normaloff>:/brushes/deevad/2B_pencil_prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pencil</string>
+   </property>
+  </action>
+  <action name="actionwaterColor">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/brushes/deevad/watercolor_glazing_prev.png</normaloff>:/brushes/deevad/watercolor_glazing_prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>waterColor</string>
+   </property>
+  </action>
+  <action name="actioncalligraphy">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/brushes/classic/calligraphy_prev.png</normaloff>:/brushes/classic/calligraphy_prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>calligraphy</string>
+   </property>
+  </action>
+  <action name="actionsewing">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/brushes/experimental/sewing_prev.png</normaloff>:/brushes/experimental/sewing_prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>sewing</string>
+   </property>
+  </action>
+  <action name="actionEraser">
+   <property name="icon">
+    <iconset resource="assets.qrc">
+     <normaloff>:/brushes/deevad/large_hard_eraser_prev.png</normaloff>:/brushes/deevad/large_hard_eraser_prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>Eraser</string>
    </property>
   </action>
  </widget>

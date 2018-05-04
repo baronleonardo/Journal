@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 	ui->tabWidget->initialize(":brushes");
+	ui->actionSelect->setChecked(true);
+	ui->graphicsView->setSceneRect(getScreenSize());
+
 	setWindowSize();
 	setWindowTitle(tr("Notix Journal"));
 
@@ -15,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	currentTool = &selectTool;
 	currentPaper = nullptr;
 
-	QStringList paperIDs = Paper::getAllPaperIDs();
+	QStringList paperIDs = PaperModel::getAllPaperIDs();
 	QStringList labels;
 
 	if(paperIDs.size() == 0)
@@ -35,9 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
 		ui->listWidget->addItems(labels);
 		setCurrentPaper(allPapers[0]);
 	}
-
-	ui->actionSelect->setChecked(true);
-	ui->graphicsView->setSceneRect(getScreenSize());
 }
 
 MainWindow::~MainWindow()
@@ -120,4 +120,24 @@ void MainWindow::on_listWidget_itemSelectionChanged()
 void MainWindow::on_newPaperButton_clicked()
 {
 	createNewPaper();
+}
+
+void MainWindow::on_actionBlue_triggered()
+{
+	currentPaper->paperView->mypaint->setBrushColor(QColor("blue"));
+}
+
+void MainWindow::on_actionBlack_triggered()
+{
+	currentPaper->paperView->mypaint->setBrushColor(QColor("black"));
+}
+
+void MainWindow::on_actionRed_triggered()
+{
+	currentPaper->paperView->mypaint->setBrushColor(QColor("red"));
+}
+
+void MainWindow::on_actionGreen_triggered()
+{
+	currentPaper->paperView->mypaint->setBrushColor(QColor("green"));
 }

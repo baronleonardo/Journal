@@ -30,6 +30,14 @@ private slots:
 
 	void on_newPaperButton_clicked();
 
+	void on_actionBlue_triggered();
+
+	void on_actionBlack_triggered();
+
+	void on_actionRed_triggered();
+
+	void on_actionGreen_triggered();
+
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();

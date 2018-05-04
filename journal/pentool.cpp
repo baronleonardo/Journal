@@ -48,7 +48,7 @@ void PenTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		currentStrokeItem = nullptr;
 		QGraphicsPixmapItem* pixmapItem = m_paper->addPixmap(pixmap);
 		m_paper->graphicsItems[pixmapItem] = QUuid::createUuid().toString();
-		m_paper->emitItemModified(pixmapItem);
+		m_paper->onNewItemAdded(pixmapItem);
 	}
 }
 
