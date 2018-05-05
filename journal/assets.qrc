@@ -326,5 +326,10 @@
         <file>assets/green.png</file>
         <file>assets/red.png</file>
         <file>assets/black.png</file>
+        <file>assets/canvas2_1.png</file>
+        <file>assets/paper1_3.png</file>
+        <file>assets/paper1_13.png</file>
+        <file>assets/paper2_2.png</file>
+        <file>assets/paper3_6.png</file>
     </qresource>
 </RCC>

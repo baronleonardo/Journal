@@ -1,6 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS = json-c \
-			libmypaint \
-			qtmypaint \
-			journal
+          libmypaint \
+          journal

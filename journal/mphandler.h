@@ -73,7 +73,7 @@ public:
     QSize surfaceSize();
 
     void clearSurface();
-    QImage renderImage();
+	QImage renderImage(QSize sceneSize);
 
     void loadImage(const QImage &image);
 

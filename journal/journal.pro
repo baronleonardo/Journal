@@ -20,7 +20,12 @@ SOURCES += main.cpp\
     paperlist.cpp \
     paperview.cpp \
     papercontroller.cpp \
-    mpbrushselector.cpp
+    mpbrushselector.cpp \
+    mpbrush.cpp \
+    mpbrushlib.cpp \
+    mphandler.cpp \
+    mpsurface.cpp \
+    mptile.cpp
 
 HEADERS  += mainwindow.h \
     papermodel.h \
@@ -33,7 +38,12 @@ HEADERS  += mainwindow.h \
     huge_dictionary.h \
     papercontroller.h \
     paperview.h \
-    mpbrushselector.h
+    mpbrushselector.h \
+    mpbrush.h \
+    mpbrushlib.h \
+    mphandler.h \
+    mpsurface.h \
+    mptile.h
 
 FORMS    += mainwindow.ui
 

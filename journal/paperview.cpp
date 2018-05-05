@@ -11,10 +11,9 @@ PaperView::PaperView(PaperController* parent) : QGraphicsScene(parent),  mCellSi
 	connect(mypaint, &MPHandler::clearedSurface, this, &PaperView::onClearedSurface);
 }
 
-PaperView::PaperView(PaperController* parent, QHash<QGraphicsItem*, QString> items) : QGraphicsScene(parent),  mCellSize(15, 15), controller(parent)
+PaperView::PaperView(PaperController* parent, QHash<QGraphicsItem*, QString> items)
+	: PaperView(parent)
 {
-	currentTool = nullptr;
-
 	graphicsItems = items;
 
 	QHashIterator<QGraphicsItem*, QString> i(graphicsItems);
@@ -23,12 +22,6 @@ PaperView::PaperView(PaperController* parent, QHash<QGraphicsItem*, QString> ite
 		i.next();
 		addItem(i.key());
 	}
-	mypaint = MPHandler::handler();
-	QSize surfaceSize(width(), height());
-	mypaint->setSurfaceSize(surfaceSize);
-	connect(mypaint, &MPHandler::newTile, this, &PaperView::onNewTile);
-	connect(mypaint, &MPHandler::updateTile, this, &PaperView::onUpdateTile);
-	connect(mypaint, &MPHandler::clearedSurface, this, &PaperView::onClearedSurface);
 }
 
 bool PaperView::itemExists(QGraphicsItem* item)
@@ -71,9 +64,6 @@ void PaperView::deleteItemFromCanvas(QGraphicsItem* item)
 
 void PaperView::onNewItemAdded(QGraphicsItem* item)
 {
-	QSize surfaceSize(width(), height());
-	mypaint->setSurfaceSize(surfaceSize);
-
 	emitItemModified(item);
 }
 
@@ -160,12 +150,16 @@ void PaperView::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	MPHandler::handler()->startStroke();
 
-	//if (currentTool) currentTool->mousePressEvent(event);
+	if (currentTool) currentTool->mousePressEvent(event);
 }
 
 void PaperView::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 	QPointF pt = event->scenePos();
+
+	if(pt.x() < 0 || pt.y() < 0)
+		return;
+
 	MPHandler::handler()->strokeTo(pt.x(), pt.y());
 
 	if (currentTool) currentTool->mouseMoveEvent(event);
@@ -175,7 +169,7 @@ void PaperView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	MPHandler::handler()->endStroke();
 
-	QImage stroke = MPHandler::handler()->renderImage();
+	QImage stroke = MPHandler::handler()->renderImage(QSize(width(), height()));
 	QPixmap strokePix;
 	strokePix.convertFromImage(stroke);
 	QGraphicsPixmapItem* item = new QGraphicsPixmapItem(strokePix);

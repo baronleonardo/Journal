@@ -45,16 +45,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class MPSurface : public MyPaintTiledSurface
 {
 public:
-    MPSurface(QSize size);
+	MPSurface();
     ~MPSurface();
 
-    uint16_t *tile_buffer; // Stores tiles in a linear chunk of memory (16bpc RGBA)
-    uint16_t *null_tile; // Single tile that we hand out and ignore writes to
-
-    int getTilesWidth();
-    int getTilesHeight();
-    int getWidth();
-    int getHeight();
+	uint16_t *null_tile; // Single tile that we hand out and ignore writes to
 
     enum { k_center = 50, k_max = 2*k_center};
 
@@ -76,11 +70,11 @@ public:
     MPOnUpdateTileFunction onNewTileFunction;
     MPOnUpdateSurfaceFunction onClearedSurfaceFunction;
 
-    void setSize(QSize size);
-    QSize size();
+	void setSize(QSize size);
+	QSize size();
 
     void clear();
-    QImage renderImage();
+	QImage renderImage(QSize sceneSize);
 
     void loadImage(const QImage &image);
 
@@ -90,10 +84,10 @@ private:
     bool isFullyTransparent(QImage image);
     std::string key;
 
-    int tiles_width; // width in tiles
-    int tiles_height; // height in tiles
-    int width; // width in pixels
-    int height; // height in pixels
+	int tiles_width; // width in tiles
+	int tiles_height; // height in tiles
+	int width; // width in pixels
+	int height; // height in pixels
 
     MPBrush*    m_brush;
     QColor      m_color;

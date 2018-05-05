@@ -74,11 +74,8 @@ MPHandler::handler()
 
 MPHandler::MPHandler()
 {
-    QSize defaultSize = QSize(  QTMYPAINT_SURFACE_WIDTH,
-                                QTMYPAINT_SURFACE_HEIGHT ) ;
-
     m_brush = new MPBrush();
-    m_surface = new MPSurface(defaultSize);
+	m_surface = new MPSurface();
 
     this->m_surface->setOnUpdateTile(onUpdatedTile);
     this->m_surface->setOnNewTile(onNewTile);
@@ -122,9 +119,9 @@ void MPHandler::clearSurface()
     m_surface->clear();
 }
 
-QImage MPHandler::renderImage()
+QImage MPHandler::renderImage(QSize sceneSize)
 {
-    QImage image = m_surface->renderImage();
+	QImage image = m_surface->renderImage(sceneSize);
     return image;
 }
 

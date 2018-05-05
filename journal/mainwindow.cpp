@@ -107,7 +107,12 @@ void MainWindow::setCurrentPaper(PaperController* p_paper)
 
 	currentPaper = p_paper;
 	currentPaper->setTool(currentTool);
+
 	ui->graphicsView->setScene((QGraphicsScene*)currentPaper->paperView);
+	QPixmap texture(":assets/paper_3_6.png");
+	QBrush brush(texture);
+	ui->graphicsView->setBackgroundBrush(brush);
+
 
 	connect(ui->tabWidget, &MPBrushSelector::brushSelected, currentPaper->paperView, &PaperView::loadBrush);
 }
@@ -124,20 +129,20 @@ void MainWindow::on_newPaperButton_clicked()
 
 void MainWindow::on_actionBlue_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor("blue"));
+	currentPaper->paperView->mypaint->setBrushColor(QColor(62, 82, 169));
 }
 
 void MainWindow::on_actionBlack_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor("black"));
+	currentPaper->paperView->mypaint->setBrushColor(QColor(46, 50, 53));
 }
 
 void MainWindow::on_actionRed_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor("red"));
+	currentPaper->paperView->mypaint->setBrushColor(QColor(218, 37, 78));
 }
 
 void MainWindow::on_actionGreen_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor("green"));
+	currentPaper->paperView->mypaint->setBrushColor(QColor(169, 172, 41));
 }
