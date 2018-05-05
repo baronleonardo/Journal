@@ -4,11 +4,6 @@
 PaperView::PaperView(PaperController* parent) : QGraphicsScene(parent),  mCellSize(15, 15), controller(parent)
 {
 	currentTool = nullptr;
-	mypaint = MPHandler::handler();
-
-	connect(mypaint, &MPHandler::newTile, this, &PaperView::onNewTile);
-	connect(mypaint, &MPHandler::updateTile, this, &PaperView::onUpdateTile);
-	connect(mypaint, &MPHandler::clearedSurface, this, &PaperView::onClearedSurface);
 }
 
 PaperView::PaperView(PaperController* parent, QHash<QGraphicsItem*, QString> items)
@@ -148,45 +143,16 @@ void PaperView::graphicsSceneDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void PaperView::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-	MPHandler::handler()->startStroke();
-
 	if (currentTool) currentTool->mousePressEvent(event);
 }
 
 void PaperView::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-	QPointF pt = event->scenePos();
-
-	if(pt.x() < 0 || pt.y() < 0)
-		return;
-
-	MPHandler::handler()->strokeTo(pt.x(), pt.y());
-
 	if (currentTool) currentTool->mouseMoveEvent(event);
 }
 
 void PaperView::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	MPHandler::handler()->endStroke();
-
-	QImage stroke = MPHandler::handler()->renderImage(QSize(width(), height()));
-	QPixmap strokePix;
-	strokePix.convertFromImage(stroke);
-	QGraphicsPixmapItem* item = new QGraphicsPixmapItem(strokePix);
-
-	for(int i = 0; i < strokeItems.size(); i++)
-	{
-		deleteItem(strokeItems[i]);
-	}
-
-	strokeItems.clear();
-	MPHandler::handler()->clearSurface();
-
-	graphicsItems[item] = QUuid::createUuid().toString();
-
-	addItem(item);
-	emitItemModified(item);
-
 	if (currentTool) currentTool->mouseReleaseEvent(event);
 }
 
@@ -234,27 +200,4 @@ void PaperView::onTextDropEvent(QGraphicsSceneDragDropEvent *event)
 	QGraphicsTextItem* item = new QGraphicsTextItem();
 	item->setHtml(event->mimeData()->html());
 	initializeAndAddItemToScene(item, event->scenePos());
-}
-
-void PaperView::onNewTile(MPSurface *surface, MPTile *tile)
-{
-	Q_UNUSED(surface);
-	strokeItems.push_back(tile);
-	addItem(tile);
-}
-
-void PaperView::onUpdateTile(MPSurface *surface, MPTile *tile)
-{
-	Q_UNUSED(surface);
-	tile->update();
-}
-
-void PaperView::onClearedSurface(MPSurface *surface)
-{
-	Q_UNUSED(surface);
-}
-
-void PaperView::loadBrush(const QByteArray &content)
-{
-	MPHandler::handler()->loadBrush(content);
 }

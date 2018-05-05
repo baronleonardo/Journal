@@ -51,8 +51,8 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionDraw_triggered()
 {
 	uncheckAllExcept(ui->actionDraw);
-	currentPaper->setTool(&penTool);
-	currentTool = &penTool;
+	currentPaper->setTool(&brushTool);
+	currentTool = &brushTool;
 }
 
 void MainWindow::on_actionText_triggered()
@@ -102,7 +102,7 @@ void MainWindow::setCurrentPaper(PaperController* p_paper)
 {
 	if (currentPaper)
 	{
-		disconnect(ui->tabWidget, &MPBrushSelector::brushSelected, currentPaper->paperView, &PaperView::loadBrush);
+		disconnect(ui->tabWidget, &MPBrushSelector::brushSelected, &brushTool, &BrushTool::loadBrush);
 	}
 
 	currentPaper = p_paper;
@@ -114,7 +114,7 @@ void MainWindow::setCurrentPaper(PaperController* p_paper)
 	ui->graphicsView->setBackgroundBrush(brush);
 
 
-	connect(ui->tabWidget, &MPBrushSelector::brushSelected, currentPaper->paperView, &PaperView::loadBrush);
+	connect(ui->tabWidget, &MPBrushSelector::brushSelected, &brushTool, &BrushTool::loadBrush);
 }
 
 void MainWindow::on_listWidget_itemSelectionChanged()
@@ -129,20 +129,20 @@ void MainWindow::on_newPaperButton_clicked()
 
 void MainWindow::on_actionBlue_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor(62, 82, 169));
+	brushTool.mypaint->setBrushColor(QColor(62, 82, 169));
 }
 
 void MainWindow::on_actionBlack_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor(46, 50, 53));
+	brushTool.mypaint->setBrushColor(QColor(46, 50, 53));
 }
 
 void MainWindow::on_actionRed_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor(218, 37, 78));
+	brushTool.mypaint->setBrushColor(QColor(218, 37, 78));
 }
 
 void MainWindow::on_actionGreen_triggered()
 {
-	currentPaper->paperView->mypaint->setBrushColor(QColor(169, 172, 41));
+	brushTool.mypaint->setBrushColor(QColor(169, 172, 41));
 }

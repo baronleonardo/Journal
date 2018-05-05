@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "papermodel.h"
-#include "pentool.h"
+#include "brushtool.h"
 #include "selecttool.h"
 #include "texttool.h"
 #include "paperlist.h"
@@ -48,7 +48,7 @@ private:
 	Tool* currentTool;
 	SelectTool selectTool;
 	MPBrushSelector *mp_brushes;
-	PenTool penTool;
+	BrushTool brushTool;
 	TextTool textTool;
 	Ui::MainWindow *ui;
     PaperList *paperList;

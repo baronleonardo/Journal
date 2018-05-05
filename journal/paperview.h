@@ -4,10 +4,6 @@
 #include <QGraphicsScene>
 #include <QVector>
 #include "tool.h"
-#include "mphandler.h"
-#include "mpbrush.h"
-#include "mpsurface.h"
-#include "mptile.h"
 
 class PaperController;
 
@@ -21,7 +17,6 @@ public:
 	bool itemExists(QGraphicsItem* item);
 
 	QString getItemId(QGraphicsItem* item);
-	MPHandler *mypaint;
 
 	void setTool(Tool* tool);
 	void deleteItem(QGraphicsItem* item);
@@ -54,17 +49,10 @@ private:
 	void onTextDropEvent(QGraphicsSceneDragDropEvent *event);
 	void initializeAndAddItemToScene(QGraphicsItem* item, QPointF position);
 
-	QVector<QGraphicsItem*> strokeItems;
 	const QSize mCellSize;
 	PaperController* controller;
 	Tool* currentTool;
 	QPointF lastPoint;
-
-public slots:
-	void onNewTile(MPSurface *surface, MPTile *tile);
-	void onUpdateTile(MPSurface *surface, MPTile *tile);
-	void onClearedSurface(MPSurface *surface);
-	void loadBrush(const QByteArray& content);
 };
 
 #endif // PAPERVIEW_H

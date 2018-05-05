@@ -13,7 +13,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     papermodel.cpp \
     tool.cpp \
-    pentool.cpp \
     selecttool.cpp \
     texttool.cpp \
     textbox.cpp \
@@ -25,12 +24,12 @@ SOURCES += main.cpp\
     mpbrushlib.cpp \
     mphandler.cpp \
     mpsurface.cpp \
-    mptile.cpp
+    mptile.cpp \
+    brushtool.cpp
 
 HEADERS  += mainwindow.h \
     papermodel.h \
     tool.h \
-    pentool.h \
     selecttool.h \
     texttool.h \
     textbox.h \
@@ -43,7 +42,8 @@ HEADERS  += mainwindow.h \
     mpbrushlib.h \
     mphandler.h \
     mpsurface.h \
-    mptile.h
+    mptile.h \
+    brushtool.h
 
 FORMS    += mainwindow.ui
 
