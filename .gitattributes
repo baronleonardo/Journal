@@ -1,1 +1,1 @@
-huge_dictionary.h filter=lfs diff=lfs merge=lfs -text
+journal/huge_dictionary.h filter=lfs diff=lfs merge=lfs -text
